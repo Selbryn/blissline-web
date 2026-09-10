@@ -31,13 +31,16 @@ document.querySelector('#app').innerHTML = `
 
   <main id="contenido">
     <section class="hero-section" id="inicio">
-      <p class="eyebrow" data-i18n="hero.eyebrow">Música en directo</p>
-      <h1 data-i18n="hero.title">Música atemporal.<br> Energía en vivo.</h1>
-      <p class="intro" data-i18n="hero.intro">Funk, disco y house para bodas, eventos privados y festivales.</p>
-      <a class="button" href="#contacto" data-i18n="hero.cta">Contactar con Blissline</a>
-      <figure class="hero-photo">
-        <img src="/images/blissline-group-dossier.webp" alt="Los cuatro integrantes de Blissline">
-      </figure>
+      <video class="hero-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+        <source src="/videos/blisslineMainVideo.mp4" type="video/mp4">
+      </video>
+      <div class="hero-video-overlay" aria-hidden="true"></div>
+      <div class="hero-copy">
+        <p class="eyebrow" data-i18n="hero.eyebrow">Música en directo</p>
+        <h1 data-i18n="hero.title">Música atemporal.<br> Energía en vivo.</h1>
+        <p class="intro" data-i18n="hero.intro">Funk, disco y house para bodas, eventos privados y festivales.</p>
+        <a class="button" href="#contacto" data-i18n="hero.cta">Contactar con Blissline</a>
+      </div>
     </section>
 
     <section class="content-section" id="show">
