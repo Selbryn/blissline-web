@@ -64,7 +64,7 @@ document.querySelector('#app').innerHTML = `
         <article>
           <div class="member-heading"><h3>Luis Albarrán</h3><p class="member-role">Bajo</p></div>
           <div class="member-photo"><img src="/images/luis.png" alt="Luis Albarrán tocando el bajo"></div>
-          <p class="member-description">El groove de Luis sostiene la pista con elegancia, precisión y una energía imposible de quedarse quieto.</p>
+          <p class="member-description">Ada pone voz y carácter a cada canción, conectando con el público desde la primera nota.</p>
         </article>
         <article>
           <div class="member-heading"><h3>Tino Bonet</h3><p class="member-role">Saxofón</p></div>
@@ -234,10 +234,10 @@ if (gl) {
       float secondVariation = fract(sin(dot(tileIndex, vec2(17.71, 119.37))) * 43758.54);
       float facetAngle = mix(.5, 1.45, pow(max(tileScreenNormal.z, 0.0), 1.5));
       float facetSparkle = mix(.42, 1.55, tileVariation) * mix(.72, 1.18, secondVariation) * facetAngle;
-      vec3 coolTint = mix(vec3(.36, .52, 1.0), vec3(.72, .18, 1.0), smoothstep(.12, .72, tileVariation));
-      vec3 facetTint = mix(coolTint, vec3(1.0, .72, .5), smoothstep(.78, 1.0, secondVariation));
-      color += cursorPool * facetSparkle * facetTint * .9;
-      color += cursorCore * facetSparkle * mix(vec3(.88, .62, 1.0), vec3(1.0, .94, .78), secondVariation) * 1.65;
+      vec3 coolTint = mix(vec3(.4, .48, 1.0), vec3(.8, .12, 1.0), smoothstep(.06, .62, tileVariation));
+      vec3 facetTint = mix(coolTint, vec3(.95, .5, .84), smoothstep(.86, 1.0, secondVariation));
+      color += cursorPool * facetSparkle * facetTint * .98;
+      color += cursorCore * facetSparkle * mix(vec3(.78, .3, 1.0), vec3(1.0, .9, .92), smoothstep(.72, 1.0, secondVariation)) * 1.72;
       vec3 keyLight = normalize(vec3(-.45, .72, .65));
       float metal = pow(max(dot(reflect(-keyLight, tileScreenNormal), viewDir), 0.0), 42.0);
       float sideLight = pow(max(dot(reflect(normalize(vec3(.8, -.1, .5)), tileScreenNormal), viewDir), 0.0), 20.0);
