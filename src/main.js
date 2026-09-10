@@ -45,10 +45,26 @@ document.querySelector('#app').innerHTML = `
       <p class="eyebrow">El grupo</p>
       <h2>Cuatro músicos, un mismo groove</h2>
       <div class="members">
-        <article><h3>Ada Nasiadka</h3><p>Voz</p></article>
-        <article><h3>Luis Albarrán</h3><p>Bajo</p></article>
-        <article><h3>Tino Bonet</h3><p>Saxofón</p></article>
-        <article><h3>Mauro Magarelli</h3><p>Percusión</p></article>
+        <article>
+          <div class="member-heading"><h3>Ada Nasiadka</h3><p class="member-role">Voz</p></div>
+          <div class="member-photo"><img src="/images/ada.png" alt="Ada Nasiadka cantando"></div>
+          <p class="member-description">Ada pone voz y carácter a cada canción, conectando con el público desde la primera nota.</p>
+        </article>
+        <article>
+          <div class="member-heading"><h3>Luis Albarrán</h3><p class="member-role">Bajo</p></div>
+          <div class="member-photo"><img src="/images/luis.png" alt="Luis Albarrán tocando el bajo"></div>
+          <p class="member-description">El groove de Luis sostiene la pista con elegancia, precisión y una energía imposible de quedarse quieto.</p>
+        </article>
+        <article>
+          <div class="member-heading"><h3>Tino Bonet</h3><p class="member-role">Saxofón</p></div>
+          <div class="member-photo"><img src="/images/tino.png" alt="Tino Bonet tocando el saxofón"></div>
+          <p class="member-description">Tino aporta melodías brillantes y ese toque de soul que convierte cada directo en algo especial.</p>
+        </article>
+        <article>
+          <div class="member-heading"><h3>Mauro Magarelli</h3><p class="member-role">Percusión</p></div>
+          <div class="member-photo"><img src="/images/mauro.png" alt="Mauro Magarelli tocando las congas"></div>
+          <p class="member-description">Mauro enciende el ritmo con sus manos y transforma cualquier espacio en una celebración.</p>
+        </article>
       </div>
     </section>
 
@@ -198,7 +214,7 @@ if (gl) {
       gl.useProgram(program)
       gl.enableVertexAttribArray(position)
       gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0)
-      gl.uniform1f(rotation, window.scrollY * .02)
+      gl.uniform1f(rotation, (window.scrollY * .002) % (Math.PI * 2))
       gl.drawArrays(gl.TRIANGLES, 0, 6)
     }
 
