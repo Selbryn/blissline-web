@@ -120,6 +120,7 @@ if (gl) {
     precision highp float;
     varying vec2 v_uv;
     uniform float u_rotation;
+    uniform vec2 u_pointer;
 
     mat2 rot2D(float a) {
       float c = cos(a);
@@ -157,26 +158,47 @@ if (gl) {
       float longitudeStep = 6.283185 / columns;
       float quantLongitude = (floor((longitude + 3.141593) / longitudeStep) + .5) * longitudeStep - 3.141593;
       vec3 tileNormal = vec3(cos(quantLongitude) * cos(quantLatitude), sin(quantLatitude), sin(quantLongitude) * cos(quantLatitude));
+      vec3 tileScreenNormal = tileNormal;
+      tileScreenNormal.xz = rot2D(-u_rotation) * tileScreenNormal.xz;
 
       vec2 grid = vec2((longitude + 3.141593) / longitudeStep, (latitude + 1.570796) / latitudeStep);
       vec2 tile = abs(fract(grid) - .5);
-      float seam = smoothstep(.445, .5, max(tile.x, tile.y));
+      float seam = smoothstep(.465, .5, max(tile.x, tile.y));
       vec2 tileIndex = floor(grid);
       float tileVariation = fract(sin(dot(tileIndex, vec2(41.23, 83.71))) * 24753.18);
 
       vec3 viewDir = normalize(vec3(-uv.x, -uv.y, 1.65));
-      vec3 reflection = reflect(-viewDir, tileNormal);
-      reflection.xz = rot2D(-u_rotation * .7) * reflection.xz;
+      vec3 reflection = reflect(-viewDir, tileScreenNormal);
       vec3 color = stageLights(reflection);
+      // Calcula la posición proyectada del centro de cada tesela. Al usar el
+      // centro (y no el píxel actual), toda la tesela comparte una respuesta
+      // de luz, produciendo reflejos separados propios de una bola de disco.
+      vec2 tileCenter = tileScreenNormal.xy;
+      vec2 cursorOnBall = u_pointer * .96;
+      float cursorDistance = distance(tileCenter, cursorOnBall);
+      float cursorPool = 1.0 - smoothstep(.1, .5, cursorDistance);
+      float cursorCore = 1.0 - smoothstep(.02, .19, cursorDistance);
+      float secondVariation = fract(sin(dot(tileIndex, vec2(17.71, 119.37))) * 43758.54);
+      float facetAngle = mix(.5, 1.45, pow(max(tileScreenNormal.z, 0.0), 1.5));
+      float facetSparkle = mix(.42, 1.55, tileVariation) * mix(.72, 1.18, secondVariation) * facetAngle;
+      vec3 coolTint = mix(vec3(.36, .52, 1.0), vec3(.72, .18, 1.0), smoothstep(.12, .72, tileVariation));
+      vec3 facetTint = mix(coolTint, vec3(1.0, .72, .5), smoothstep(.78, 1.0, secondVariation));
+      color += cursorPool * facetSparkle * facetTint * .9;
+      color += cursorCore * facetSparkle * mix(vec3(.88, .62, 1.0), vec3(1.0, .94, .78), secondVariation) * 1.65;
       vec3 keyLight = normalize(vec3(-.45, .72, .65));
-      float metal = pow(max(dot(reflect(-keyLight, tileNormal), viewDir), 0.0), 42.0);
-      float sideLight = pow(max(dot(reflect(normalize(vec3(.8, -.1, .5)), tileNormal), viewDir), 0.0), 20.0);
+      float metal = pow(max(dot(reflect(-keyLight, tileScreenNormal), viewDir), 0.0), 42.0);
+      float sideLight = pow(max(dot(reflect(normalize(vec3(.8, -.1, .5)), tileScreenNormal), viewDir), 0.0), 20.0);
       color += metal * vec3(1.0);
       color += sideLight * vec3(.55, .67, .92);
       float tileFlash = pow(max(dot(reflection, normalize(vec3(.25, .48, .84))), 0.0), 80.0);
       color += tileFlash * mix(vec3(.8, .92, 1.0), vec3(1.0), tileVariation);
-      color *= mix(.86, 1.25, z) * mix(.88, 1.14, tileVariation);
-      color = mix(color, vec3(.31, .33, .39), seam * .68);
+      // Mantiene cada faceta bien definida incluso cuando una zona amplia
+      // refleja una parte uniforme del entorno.
+      float tileContrast = mix(.7, 1.32, smoothstep(.08, .92, tileVariation));
+      float crispFacet = mix(.035, .13, secondVariation) * (1.0 - seam);
+      color *= mix(.86, 1.25, z) * tileContrast;
+      color += crispFacet * mix(vec3(.42, .48, .72), vec3(.72, .28, .9), tileVariation);
+      color = mix(color, vec3(.2, .21, .27), seam * .82);
       color += pow(1.0 - z, 3.0) * vec3(.17, .19, .28);
 
       float edge = 1.0 - smoothstep(.965, 1.0, radius);
@@ -202,6 +224,9 @@ if (gl) {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]), gl.STATIC_DRAW)
     const position = gl.getAttribLocation(program, 'a_position')
     const rotation = gl.getUniformLocation(program, 'u_rotation')
+    const pointer = gl.getUniformLocation(program, 'u_pointer')
+    const pointerTarget = { x: 0, y: 0 }
+    const pointerCurrent = { x: 0, y: 0 }
 
     const draw = () => {
       const pixelRatio = Math.min(window.devicePixelRatio || 1, 2)
@@ -215,11 +240,36 @@ if (gl) {
       gl.enableVertexAttribArray(position)
       gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0)
       gl.uniform1f(rotation, (window.scrollY * .002) % (Math.PI * 2))
+      pointerCurrent.x += (pointerTarget.x - pointerCurrent.x) * .14
+      pointerCurrent.y += (pointerTarget.y - pointerCurrent.y) * .14
+      gl.uniform2f(pointer, pointerCurrent.x, pointerCurrent.y)
       gl.drawArrays(gl.TRIANGLES, 0, 6)
     }
 
     window.addEventListener('scroll', draw, { passive: true })
     window.addEventListener('resize', draw)
+    window.addEventListener('pointermove', (event) => {
+      const bounds = canvas.getBoundingClientRect()
+      const visibleLeft = Math.max(0, bounds.left)
+      const visibleRight = Math.min(window.innerWidth, bounds.right)
+      const visibleTop = Math.max(0, bounds.top)
+      const visibleBottom = Math.min(window.innerHeight, bounds.bottom)
+      const screenX = Math.max(0, Math.min(1, event.clientX / window.innerWidth))
+      const screenY = Math.max(0, Math.min(1, event.clientY / window.innerHeight))
+
+      // Proyecta toda la pantalla solamente sobre la porción visible del canvas.
+      // La coordenada Y de WebGL crece desde abajo, al contrario que la del DOM.
+      const projectedX = visibleLeft + screenX * Math.max(0, visibleRight - visibleLeft)
+      const projectedY = visibleTop + screenY * Math.max(0, visibleBottom - visibleTop)
+      pointerTarget.x = ((projectedX - bounds.left) / bounds.width) * 2.0 - 1.0
+      pointerTarget.y = 1.0 - ((projectedY - bounds.top) / bounds.height) * 2.0
+      draw()
+    }, { passive: true })
+    const animatePointer = () => {
+      draw()
+      requestAnimationFrame(animatePointer)
+    }
+    requestAnimationFrame(animatePointer)
     draw()
   }
 }
