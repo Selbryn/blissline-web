@@ -7,6 +7,7 @@ document.querySelector('#app').innerHTML = `
     <span class="disco-ball__chain"></span>
   </div>
   <header class="site-header">
+    <canvas class="header-reflections" aria-hidden="true"></canvas>
     <a class="brand" href="#inicio" aria-label="Blissline, inicio">
       <img src="/images/blissline-logo.png" alt="Blissline">
     </a>
@@ -281,8 +282,24 @@ if (gl) {
     const position = gl.getAttribLocation(program, 'a_position')
     const rotation = gl.getUniformLocation(program, 'u_rotation')
     const pointer = gl.getUniformLocation(program, 'u_pointer')
+    const header = document.querySelector('.site-header')
+    const headerReflections = document.querySelector('.header-reflections')
+    const reflectionParticles = Array.from({ length: 180 }, (_, index) => {
+      const seed = index * 12.9898
+      return {
+        x: .03 + ((Math.sin(seed) + 1) / 2) * .94,
+        y: .1 + ((Math.sin(seed * 1.43) + 1) / 2) * .7,
+        phase: ((Math.sin(seed * 1.73) + 1) / 2) * Math.PI * 2,
+        drift: .35 + ((Math.sin(seed * 1.91) + 1) / 2) * .65,
+        size: .45 + ((Math.sin(seed * 2.31) + 1) / 2) * 1.15,
+        alpha: .18 + ((Math.sin(seed * 3.17) + 1) / 2) * .34,
+        hue: ((Math.sin(seed * 4.19) + 1) / 2)
+      }
+    })
     const pointerTarget = { x: 0, y: 0 }
     const pointerCurrent = { x: 0, y: 0 }
+    const headerPointerTarget = { x: 0, y: 0 }
+    const headerPointerCurrent = { x: 0, y: 0 }
 
     const draw = () => {
       const pixelRatio = Math.min(window.devicePixelRatio || 1, 2)
@@ -295,16 +312,58 @@ if (gl) {
       gl.useProgram(program)
       gl.enableVertexAttribArray(position)
       gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0)
-      gl.uniform1f(rotation, (window.scrollY * .002) % (Math.PI * 2))
+      const rotationTravel = window.scrollY * .002
+      const rotationValue = rotationTravel % (Math.PI * 2)
+      gl.uniform1f(rotation, rotationValue)
       pointerCurrent.x += (pointerTarget.x - pointerCurrent.x) * .14
       pointerCurrent.y += (pointerTarget.y - pointerCurrent.y) * .14
+      headerPointerCurrent.x += (headerPointerTarget.x - headerPointerCurrent.x) * .12
+      headerPointerCurrent.y += (headerPointerTarget.y - headerPointerCurrent.y) * .12
       gl.uniform2f(pointer, pointerCurrent.x, pointerCurrent.y)
+      if (header) {
+        const reflectionX = 50 + headerPointerCurrent.x * 8
+        const reflectionY = 42 + headerPointerCurrent.y * 17
+        const reflectionAngle = 90
+        header.style.setProperty('--reflection-x', `${reflectionX}%`)
+        header.style.setProperty('--reflection-y', `${reflectionY}%`)
+        header.style.setProperty('--reflection-angle', `${reflectionAngle}deg`)
+      }
+      if (headerReflections && header) {
+        const pixelRatio = Math.min(window.devicePixelRatio || 1, 2)
+        const width = header.clientWidth
+        const height = header.clientHeight
+        if (headerReflections.width !== Math.round(width * pixelRatio) || headerReflections.height !== Math.round(height * pixelRatio)) {
+          headerReflections.width = Math.round(width * pixelRatio)
+          headerReflections.height = Math.round(height * pixelRatio)
+        }
+        const context = headerReflections.getContext('2d')
+        context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
+        context.clearRect(0, 0, width, height)
+        const wallShiftX = headerPointerCurrent.x * .045
+        const wallShiftY = headerPointerCurrent.y * .08
+        reflectionParticles.forEach((particle) => {
+          // La pared está frente al espectador: los reflejos cruzan todo el
+          // plano horizontalmente y desaparecen al salir por el borde.
+          const travel = particle.x + rotationTravel * (.105 + particle.drift * .045) + wallShiftX
+          const wrappedX = ((travel % 1) + 1) % 1
+          const shimmer = rotationTravel * particle.drift + particle.phase
+          const x = width * wrappedX
+          const y = height * (particle.y + wallShiftY + Math.sin(shimmer) * .018)
+          const color = particle.hue > .66 ? '255, 225, 186' : particle.hue > .33 ? '188, 215, 255' : '218, 191, 255'
+          context.fillStyle = `rgba(${color}, ${Math.min(.95, particle.alpha * 1.7)})`
+          context.beginPath()
+          context.arc(x, y, particle.size * (.78 + Math.sin(shimmer * 1.6) * .18), 0, Math.PI * 2)
+          context.fill()
+        })
+      }
       gl.drawArrays(gl.TRIANGLES, 0, 6)
     }
 
     window.addEventListener('scroll', draw, { passive: true })
     window.addEventListener('resize', draw)
     window.addEventListener('pointermove', (event) => {
+      headerPointerTarget.x = (event.clientX / window.innerWidth) * 2 - 1
+      headerPointerTarget.y = 1 - (event.clientY / window.innerHeight) * 2
       const bounds = canvas.getBoundingClientRect()
       const visibleLeft = Math.max(0, bounds.left)
       const visibleRight = Math.min(window.innerWidth, bounds.right)

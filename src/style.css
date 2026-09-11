@@ -62,9 +62,113 @@ a { color: inherit; }
   background: rgba(13, 7, 50, .88);
   border-bottom: 2px solid var(--line);
   backdrop-filter: blur(14px);
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.header-reflections {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 1;
+  clip-path: inset(0 0 3px);
+}
+
+.site-header::before,
+.site-header::after {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  content: '';
+}
+
+.site-header::before {
+  background:
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 25%) calc(var(--reflection-y, 18%) + 19%), rgba(221, 196, 255, .3) 0 1.5px, transparent 4px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 16%) calc(var(--reflection-y, 18%) - 8%), rgba(169, 205, 255, .24) 0 1px, transparent 3.5px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 5%) calc(var(--reflection-y, 18%) + 9%), rgba(255, 244, 218, .3) 0 1.5px, transparent 4px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 7%) calc(var(--reflection-y, 18%) - 14%), rgba(207, 181, 255, .28) 0 1px, transparent 3.5px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 18%) calc(var(--reflection-y, 18%) + 4%), rgba(150, 211, 255, .24) 0 1.5px, transparent 4px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 27%) calc(var(--reflection-y, 18%) + 22%), rgba(255, 231, 188, .25) 0 1px, transparent 3.5px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 31%) calc(var(--reflection-y, 18%) - 2%), rgba(183, 213, 255, .22) 0 1px, transparent 3px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 21%) calc(var(--reflection-y, 18%) + 29%), rgba(255, 234, 202, .22) 0 1px, transparent 3px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 2%) calc(var(--reflection-y, 18%) - 25%), rgba(213, 190, 255, .25) 0 1.25px, transparent 3.5px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 31%) calc(var(--reflection-y, 18%) + 11%), rgba(174, 224, 255, .22) 0 1px, transparent 3px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 13%) calc(var(--reflection-y, 18%) + 31%), rgba(255, 220, 181, .2) 0 1px, transparent 3px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 37%) calc(var(--reflection-y, 18%) + 11%), rgba(218, 202, 255, .18) 0 .8px, transparent 2.8px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 34%) calc(var(--reflection-y, 18%) + 36%), rgba(160, 210, 255, .2) 0 .8px, transparent 2.8px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 28%) calc(var(--reflection-y, 18%) - 21%), rgba(255, 230, 190, .2) 0 .9px, transparent 3px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 13%) calc(var(--reflection-y, 18%) + 38%), rgba(197, 174, 255, .18) 0 .8px, transparent 2.8px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 8%) calc(var(--reflection-y, 18%) - 34%), rgba(172, 221, 255, .2) 0 .8px, transparent 2.8px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 4%) calc(var(--reflection-y, 18%) + 42%), rgba(255, 231, 197, .18) 0 .8px, transparent 2.8px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 20%) calc(var(--reflection-y, 18%) - 30%), rgba(215, 187, 255, .2) 0 .9px, transparent 3px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 35%) calc(var(--reflection-y, 18%) - 13%), rgba(168, 215, 255, .18) 0 .8px, transparent 2.8px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 39%) calc(var(--reflection-y, 18%) + 28%), rgba(255, 225, 183, .2) 0 .8px, transparent 2.8px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 24%) calc(var(--reflection-y, 18%) + 40%), rgba(195, 177, 255, .18) 0 .8px, transparent 2.8px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 2%) calc(var(--reflection-y, 18%) + 27%), rgba(176, 222, 255, .2) 0 .8px, transparent 2.8px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 19%) calc(var(--reflection-y, 18%) - 31%), rgba(255, 238, 206, .17) 0 .8px, transparent 2.8px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 44%) calc(var(--reflection-y, 18%) + 23%), rgba(186, 212, 255, .15) 0 .7px, transparent 2.5px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 41%) calc(var(--reflection-y, 18%) - 12%), rgba(231, 207, 255, .16) 0 .7px, transparent 2.5px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 33%) calc(var(--reflection-y, 18%) - 35%), rgba(255, 232, 195, .15) 0 .7px, transparent 2.5px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 24%) calc(var(--reflection-y, 18%) + 48%), rgba(181, 220, 255, .16) 0 .7px, transparent 2.5px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 15%) calc(var(--reflection-y, 18%) - 43%), rgba(207, 184, 255, .15) 0 .7px, transparent 2.5px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 6%) calc(var(--reflection-y, 18%) + 51%), rgba(255, 229, 188, .16) 0 .7px, transparent 2.5px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 8%) calc(var(--reflection-y, 18%) - 45%), rgba(181, 218, 255, .15) 0 .7px, transparent 2.5px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 16%) calc(var(--reflection-y, 18%) + 50%), rgba(221, 196, 255, .16) 0 .7px, transparent 2.5px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 28%) calc(var(--reflection-y, 18%) - 39%), rgba(255, 232, 197, .15) 0 .7px, transparent 2.5px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 43%) calc(var(--reflection-y, 18%) - 4%), rgba(179, 216, 255, .16) 0 .7px, transparent 2.5px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 46%) calc(var(--reflection-y, 18%) + 21%), rgba(212, 185, 255, .15) 0 .7px, transparent 2.5px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 36%) calc(var(--reflection-y, 18%) + 45%), rgba(255, 226, 185, .16) 0 .7px, transparent 2.5px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 4%) calc(var(--reflection-y, 18%) + 36%), rgba(183, 222, 255, .15) 0 .7px, transparent 2.5px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 11%) calc(var(--reflection-y, 18%) + 22%), rgba(231, 206, 255, .15) 0 .7px, transparent 2.5px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 27%) calc(var(--reflection-y, 18%) + 7%), rgba(255, 235, 201, .15) 0 .7px, transparent 2.5px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 48%) calc(var(--reflection-y, 18%) + 4%), rgba(208, 193, 255, .12) 0 .6px, transparent 2.3px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 46%) calc(var(--reflection-y, 18%) + 34%), rgba(170, 215, 255, .13) 0 .6px, transparent 2.3px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 39%) calc(var(--reflection-y, 18%) - 28%), rgba(255, 227, 190, .13) 0 .6px, transparent 2.3px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 30%) calc(var(--reflection-y, 18%) + 55%), rgba(185, 222, 255, .12) 0 .6px, transparent 2.3px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 20%) calc(var(--reflection-y, 18%) - 52%), rgba(224, 198, 255, .13) 0 .6px, transparent 2.3px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 10%) calc(var(--reflection-y, 18%) + 58%), rgba(255, 236, 204, .12) 0 .6px, transparent 2.3px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 1%) calc(var(--reflection-y, 18%) - 55%), rgba(182, 219, 255, .13) 0 .6px, transparent 2.3px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 10%) calc(var(--reflection-y, 18%) + 57%), rgba(211, 188, 255, .12) 0 .6px, transparent 2.3px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 22%) calc(var(--reflection-y, 18%) - 50%), rgba(255, 231, 195, .13) 0 .6px, transparent 2.3px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 34%) calc(var(--reflection-y, 18%) + 53%), rgba(174, 216, 255, .12) 0 .6px, transparent 2.3px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 48%) calc(var(--reflection-y, 18%) + 2%), rgba(222, 196, 255, .13) 0 .6px, transparent 2.3px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 49%) calc(var(--reflection-y, 18%) + 35%), rgba(255, 228, 190, .12) 0 .6px, transparent 2.3px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 39%) calc(var(--reflection-y, 18%) - 27%), rgba(182, 220, 255, .13) 0 .6px, transparent 2.3px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 25%) calc(var(--reflection-y, 18%) + 57%), rgba(213, 188, 255, .12) 0 .6px, transparent 2.3px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) + 7%) calc(var(--reflection-y, 18%) + 47%), rgba(255, 234, 199, .13) 0 .6px, transparent 2.3px),
+    radial-gradient(circle at calc(var(--reflection-x, 50%) - 17%) calc(var(--reflection-y, 18%) - 45%), rgba(179, 218, 255, .12) 0 .6px, transparent 2.3px),
+    radial-gradient(circle at var(--reflection-x, 50%) var(--reflection-y, 18%), rgba(238, 220, 255, .16), transparent 16%),
+    radial-gradient(ellipse at var(--reflection-x, 50%) 130%, rgba(125, 97, 255, .14), transparent 34%);
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+
+.site-header::after {
+  background: linear-gradient(
+    var(--reflection-angle, 112deg),
+    transparent 0%,
+    transparent 42%,
+    rgba(243, 240, 233, .08) 48%,
+    rgba(169, 137, 255, .18) 50%,
+    transparent 57%,
+    transparent 100%
+  );
+  background-size: 220% 220%;
+  background-position: var(--reflection-x, 50%) var(--reflection-y, 50%);
+  mix-blend-mode: screen;
+  opacity: .16;
 }
 
 .brand {
+  position: relative;
+  z-index: 1;
   display: inline-flex;
   align-items: center;
   width: clamp(8.75rem, 14vw, 11rem);
@@ -75,10 +179,10 @@ a { color: inherit; }
 nav { display: flex; flex-wrap: wrap; gap: clamp(.75rem, 2vw, 1.75rem); }
 nav a { color: var(--cream); font-size: .76rem; font-weight: 800; letter-spacing: .08em; text-decoration: none; text-transform: uppercase; }
 nav a:hover, nav a:focus-visible { color: var(--orange); }
-.language-picker { position: absolute; top: 50%; right: calc(var(--page-gutter) / 2); display: inline-flex; align-items: center; gap: .35rem; color: var(--cream); transform: translate(50%, -50%); }
+.language-picker { position: absolute; z-index: 4; top: 50%; right: 1rem; display: inline-flex; align-items: center; gap: .35rem; color: var(--cream); transform: translateY(-50%); }
 .language-toggle { display: inline-flex; align-items: center; justify-content: center; width: 2.5rem; height: 2rem; border: 0; padding: .25rem; background: transparent; cursor: pointer; }
 .language-toggle:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; }
-.language-menu { position: absolute; top: calc(100% + .65rem); right: 0; display: none; gap: .35rem; padding: .45rem; border: 2px solid var(--line); background: var(--midnight); box-shadow: 0 .75rem 1.5rem rgba(3, 0, 19, .4); }
+.language-menu { position: absolute; z-index: 5; top: calc(100% + .65rem); right: 0; display: none; gap: .35rem; padding: .45rem; border: 0; background: transparent; box-shadow: none; }
 .language-menu.is-open { display: flex; flex-direction: column; }
 .language-menu button { display: inline-flex; align-items: center; justify-content: center; width: 2.5rem; height: 2rem; border: 0; background: transparent; cursor: pointer; }
 .language-menu button:hover, .language-menu button:focus-visible { background: rgba(243, 240, 233, .12); outline: 0; }
@@ -94,7 +198,7 @@ nav a:hover, nav a:focus-visible { color: var(--orange); }
   padding-top: 6rem;
   padding-bottom: 6rem;
   background: #100735;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .hero-video, .hero-video-overlay {
@@ -104,7 +208,7 @@ nav a:hover, nav a:focus-visible { color: var(--orange); }
   height: 100%;
 }
 .hero-video { z-index: 0; display: block; object-fit: cover; object-position: center; background: #100735; filter: saturate(1.15) contrast(1.08); }
-.hero-video-overlay { z-index: 1; background: linear-gradient(90deg, rgba(8, 3, 35, .92) 0%, rgba(12, 5, 48, .68) 42%, rgba(9, 4, 30, .18) 100%), linear-gradient(0deg, rgba(8, 3, 35, .54), transparent 55%); }
+.hero-video-overlay { z-index: 1; background: linear-gradient(to bottom, transparent 62%, #0d0732 100%), linear-gradient(90deg, rgba(8, 3, 35, .92) 0%, rgba(12, 5, 48, .68) 42%, rgba(9, 4, 30, .18) 100%), linear-gradient(0deg, rgba(8, 3, 35, .54), transparent 55%); }
 .hero-copy { position: relative; z-index: 2; grid-column: 1; grid-row: 1; max-width: 48rem; }
 
 .hero-section::before {
@@ -121,13 +225,12 @@ nav a:hover, nav a:focus-visible { color: var(--orange); }
 
 .hero-section::after {
   position: absolute;
-  z-index: -1;
+  z-index: 1;
   right: -5vw;
-  bottom: -3.2rem;
+  bottom: 0;
   width: 120vw;
-  height: 7rem;
-  background: var(--midnight);
-  clip-path: polygon(0 65%, 18% 43%, 37% 74%, 58% 36%, 79% 68%, 100% 25%, 100% 100%, 0 100%);
+  height: 12rem;
+  background: linear-gradient(to bottom, rgba(13, 7, 50, 0), #0d0732);
   content: '';
 }
 
@@ -162,7 +265,7 @@ h3 { margin-bottom: .35rem; color: var(--orange); font-size: 2rem; line-height: 
 
 .content-section { position: relative; padding-top: clamp(5rem, 12vw, 9rem); padding-bottom: clamp(5rem, 12vw, 9rem); }
 .content-section::after { position: absolute; right: max(1.5rem, calc((100% - 73rem) / 2)); bottom: 0; left: max(1.5rem, calc((100% - 73rem) / 2)); height: 2px; background: var(--line); content: ''; }
-#show { background: linear-gradient(135deg, #0d0732, #17105d); }
+#show { background: linear-gradient(to bottom, #0d0732 0, rgba(13, 7, 50, .96) 3rem, rgba(13, 7, 50, 0) 12rem), linear-gradient(135deg, #0d0732, #17105d); }
 #integrantes { background: #100846; }
 #repertorio { background: radial-gradient(circle at 78% 26%, rgba(174, 42, 231, .66), transparent 35%), linear-gradient(115deg, #1d3cba, #100846); }
 #eventos { background: #0d0732; }
@@ -181,7 +284,7 @@ h3 { margin-bottom: .35rem; color: var(--orange); font-size: 2rem; line-height: 
 .member-heading .member-role { margin: .35rem 0 0; color: var(--orange); font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .member-photo { position: relative; z-index: 1; flex: 0 0 24rem; width: 100%; height: 24rem; overflow: visible; }
 .member-photo img { position: relative; z-index: 1; display: block; width: 100%; height: 100%; object-fit: contain; object-position: center bottom; opacity: 1; transform: scale(1.1); transform-origin: center bottom; -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 77%, transparent 100%); mask-image: linear-gradient(to bottom, #000 0%, #000 77%, transparent 100%); }
-.members article:nth-child(1) .member-photo img { transform: scale(1.1); -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 95%, transparent 100%); mask-image: linear-gradient(to bottom, #000 0%, #000 95%, transparent 100%); }
+.members article:nth-child(1) .member-photo img { transform: translateY(50px) scale(1.1); -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 95%, transparent 100%); mask-image: linear-gradient(to bottom, #000 0%, #000 95%, transparent 100%); }
 .members article:nth-child(2) .member-photo img { transform: translateY(18%) scale(1.1) scaleX(-1); }
 .members article:nth-child(3) .member-photo img { transform: translateY(12%) scale(1.1); }
 .members article:nth-child(4) .member-photo img { transform: translateY(10%) scale(1.1); }
