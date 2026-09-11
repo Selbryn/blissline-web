@@ -30,6 +30,10 @@ document.querySelector('#app').innerHTML = `
     </nav>
   </header>
 
+  <a class="button floating-contact" href="#contacto" aria-label="Contactar con Blissline">
+    <span data-i18n="floating.cta">Contactar con Blissline</span>
+  </a>
+
   <main id="contenido">
     <section class="hero-section" id="inicio">
       <video class="hero-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
@@ -38,9 +42,8 @@ document.querySelector('#app').innerHTML = `
       <div class="hero-video-overlay" aria-hidden="true"></div>
       <div class="hero-copy">
         <p class="eyebrow" data-i18n="hero.eyebrow">Música en directo</p>
-        <h1 data-i18n="hero.title">Música atemporal.<br>Energía en vivo.</h1>
+        <h1 data-i18n="hero.title">BLISSLINE.<br>Música atemporal.</h1>
         <p class="intro" data-i18n="hero.intro">Funk, disco y house para bodas, eventos privados y festivales.</p>
-        <a class="button" href="#contacto" data-i18n="hero.cta">Contactar con Blissline</a>
       </div>
     </section>
 
@@ -127,10 +130,26 @@ document.querySelector('#app').innerHTML = `
       <p class="eyebrow" data-i18n="contact.eyebrow">Contacto</p>
       <h2 data-i18n="contact.title">Hablemos de tu evento</h2>
       <p data-i18n="contact.description">Cuéntanos qué tienes en mente y crearemos el sonido de la noche.</p>
-      <div class="contact-links">
-        <a href="https://www.instagram.com/blissline.es/" target="_blank" rel="noreferrer">Instagram: @blissline.es</a>
-        <a href="mailto:blissline.es@gmail.com">blissline.es@gmail.com</a>
-        <a href="https://wa.me/34611619440" target="_blank" rel="noreferrer">WhatsApp: +34 611 61 94 40</a>
+      <div class="contact-details">
+        <a class="contact-detail" href="mailto:blissline.es@gmail.com">
+          <span class="contact-detail-label">Email</span>
+          <span>blissline.es@gmail.com</span>
+        </a>
+        <a class="contact-detail" href="tel:+34611619440">
+          <span class="contact-detail-label">Teléfono</span>
+          <span>+34 611 61 94 40</span>
+        </a>
+      </div>
+      <div class="contact-links" aria-label="Redes sociales">
+        <a class="contact-icon" href="https://www.instagram.com/blissline.es/" target="_blank" rel="noreferrer" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.25" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.4" cy="6.7" r="1.1" fill="currentColor"/></svg>
+        </a>
+        <a class="contact-icon" href="https://www.youtube.com/playlist?list=PLJSZpgz-EJ58" target="_blank" rel="noreferrer" aria-label="YouTube">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="m10 9 5 3-5 3Z" fill="currentColor"/></svg>
+        </a>
+        <a class="contact-icon" href="https://wa.me/34611619440" target="_blank" rel="noreferrer" aria-label="Abrir WhatsApp">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.6a8 8 0 0 1-11.8 7l-4.2 1.2 1.3-4A8 8 0 1 1 20 11.6Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 8.6c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.6 1.4c.1.3.1.5-.1.7l-.5.6c.6 1.2 1.5 2.1 2.7 2.7l.6-.5c.2-.2.4-.2.7-.1l1.4.6c.3.1.4.3.4.5v.5c0 .3 0 .5-.4.7-.5.3-1.2.5-1.8.3-2.6-.7-4.5-2.6-5.2-5.2-.2-.7 0-1.3.3-1.8Z" fill="currentColor"/></svg>
+        </a>
       </div>
     </section>
   </main>
@@ -139,7 +158,7 @@ document.querySelector('#app').innerHTML = `
 `
 
 const translations = {
-  es: { language: 'Idioma', nav: ['El show', 'Repertorio', 'Eventos', 'Contacto'], hero: ['Música en directo', 'Música atemporal.<br>Energía en vivo.', 'Funk, disco y house para bodas, eventos privados y festivales.', 'Contactar con Blissline'], show: ['Más que música en vivo', 'Un sonido que todos conocen', 'Canciones icónicas, músicos en vivo y un groove irresistible: una experiencia para conectar generaciones, culturas y nacionalidades.'], band: ['El grupo', 'Cuatro músicos, un mismo groove'], repertoire: ['El sonido', 'Ya conoces las canciones. Ahora vívelas en directo.', '', 'Escucha el repertorio', 'Nuestro directo'], events: ['Para cada celebración', 'Los grandes momentos se recuerdan por cómo suenan.'], contact: ['Contacto', 'Hablemos de tu evento', 'Cuéntanos qué tienes en mente y crearemos el sonido de la noche.'], features: [['Atemporal', 'Canciones que nunca se olvidan.'], ['Internacional', 'Música que cruza idiomas y culturas.'], ['En vivo', 'Músicos reales, interacción real, energía real.'], ['Versátil', 'Del cóctel elegante a una pista de baile llena.']], eventItems: ['Bodas', 'Eventos privados y corporativos', 'Festivales'], roles: ['Voz', 'Bajo', 'Saxofón', 'Percusión'] },
+  es: { language: 'Idioma', nav: ['El show', 'Repertorio', 'Eventos', 'Contacto'], hero: ['Música en directo', 'BLISSLINE.<br>Música atemporal.', 'Funk, disco y house para bodas, eventos privados y festivales.', 'Contactar con Blissline'], show: ['Más que música en vivo', 'Un sonido que todos conocen', 'Canciones icónicas, músicos en vivo y un groove irresistible: una experiencia para conectar generaciones, culturas y nacionalidades.'], band: ['El grupo', 'Cuatro músicos, un mismo groove'], repertoire: ['El sonido', 'Ya conoces las canciones. Ahora vívelas en directo.', '', 'Escucha el repertorio', 'Nuestro directo'], events: ['Para cada celebración', 'Los grandes momentos se recuerdan por cómo suenan.'], contact: ['Contacto', 'Hablemos de tu evento', 'Cuéntanos qué tienes en mente y crearemos el sonido de la noche.'], features: [['Atemporal', 'Canciones que nunca se olvidan.'], ['Internacional', 'Música que cruza idiomas y culturas.'], ['En vivo', 'Músicos reales, interacción real, energía real.'], ['Versátil', 'Del cóctel elegante a una pista de baile llena.']], eventItems: ['Bodas', 'Eventos privados y corporativos', 'Festivales'], roles: ['Voz', 'Bajo', 'Saxofón', 'Percusión'] },
   en: { language: 'Language', nav: ['The show', 'Repertoire', 'Events', 'Contact'], hero: ['Live music', 'Timeless music.<br>Live energy.', 'Funk, disco and house for weddings, private events and festivals.', 'Contact Blissline'], show: ['More than live music', 'A sound everyone knows', 'Iconic songs, live musicians and an irresistible groove: an experience that connects generations, cultures and nationalities.'], band: ['The band', 'Four musicians, one groove'], repertoire: ['The sound', 'You know the songs. Now experience them live.', 'From timeless disco and funk classics to the energy of contemporary house.', 'Listen to the repertoire', 'Our live show'], events: ['For every celebration', 'Great moments are remembered by how they sound.'], contact: ['Contact', 'Let’s talk about your event', 'Tell us what you have in mind and we’ll create the sound of the night.'], features: [['Timeless', 'Songs you never forget.'], ['International', 'Music that crosses languages and cultures.'], ['Live', 'Real musicians, real interaction, real energy.'], ['Versatile', 'From an elegant cocktail to a packed dance floor.']], eventItems: ['Weddings', 'Private and corporate events', 'Festivals'], roles: ['Vocals', 'Bass', 'Saxophone', 'Percussion'] },
   pl: { language: 'Język', nav: ['Show', 'Repertuar', 'Wydarzenia', 'Kontakt'], hero: ['Muzyka na żywo', 'Ponadczasowa muzyka.<br>Energia na żywo.', 'Funk, disco i house na wesela, prywatne wydarzenia i festiwale.', 'Skontaktuj się z Blissline'], show: ['Więcej niż muzyka na żywo', 'Brzmienie, które zna każdy', 'Ikoniczne utwory, muzycy na żywo i nieodparty groove: doświadczenie łączące pokolenia, kultury i narodowości.'], band: ['Zespół', 'Czterech muzyków, jeden groove'], repertoire: ['Brzmienie', 'Znasz te utwory. Teraz przeżyj je na żywo.', 'Od ponadczasowych klasyków disco i funku po energię współczesnego house’u.', 'Posłuchaj repertuaru', 'Nasz koncert na żywo'], events: ['Na każdą uroczystość', 'Wielkie chwile pamięta się po tym, jak brzmią.'], contact: ['Kontakt', 'Porozmawiajmy o Twoim wydarzeniu', 'Opowiedz nam o swoich planach, a stworzymy brzmienie tego wieczoru.'], features: [['Ponadczasowe', 'Piosenki, których się nie zapomina.'], ['Międzynarodowe', 'Muzyka przekraczająca języki i kultury.'], ['Na żywo', 'Prawdziwi muzycy, prawdziwa energia.'], ['Wszechstronne', 'Od eleganckiego koktajlu po pełny parkiet.']], eventItems: ['Wesela', 'Wydarzenia prywatne i firmowe', 'Festiwale'], roles: ['Wokal', 'Bas', 'Saksofon', 'Perkusja'] }
 }
@@ -155,7 +174,7 @@ const applyLanguage = (language) => {
   document.querySelector('nav').setAttribute('aria-label', t.language)
   document.querySelectorAll('nav > a').forEach((el, i) => { el.textContent = t.nav[i] })
   const groups = [
-    [['.hero-section .eyebrow', '.hero-section h1', '.hero-section .intro', '.hero-section .button'], t.hero],
+    [['.hero-section .eyebrow', '.hero-section h1', '.hero-section .intro'], t.hero],
     [['#show .eyebrow', '#show h2', '#show > p'], t.show],
     [['#integrantes .eyebrow', '#integrantes h2'], t.band],
     [['#repertorio .eyebrow', '#repertorio h2', '#repertorio > p'], t.repertoire],
@@ -163,6 +182,8 @@ const applyLanguage = (language) => {
     [['#contacto .eyebrow', '#contacto h2', '#contacto > p'], t.contact]
   ]
   groups.forEach(([selectors, values]) => selectors.forEach((selector, i) => { const el = document.querySelector(selector); if (el) el.innerHTML = values[i] }))
+  const floatingContact = document.querySelector('.floating-contact span')
+  if (floatingContact) floatingContact.textContent = t.hero[3]
   document.querySelectorAll('.feature-list li').forEach((el, i) => { el.querySelector('strong').textContent = t.features[i][0]; el.querySelector('span').textContent = t.features[i][1] })
   document.querySelectorAll('.event-list li').forEach((el, i) => { el.textContent = t.eventItems[i] })
   document.querySelectorAll('.member-role').forEach((el, i) => { el.textContent = t.roles[i] })
@@ -317,7 +338,7 @@ if (gl) {
     const pointer = gl.getUniformLocation(program, 'u_pointer')
     const header = document.querySelector('.site-header')
     const headerReflections = document.querySelector('.header-reflections')
-    const reflectionParticles = Array.from({ length: 180 }, (_, index) => {
+    const reflectionParticles = Array.from({ length: 88 }, (_, index) => {
       const seed = index * 12.9898
       return {
         x: .03 + ((Math.sin(seed) + 1) / 2) * .94,
@@ -383,9 +404,15 @@ if (gl) {
           const x = width * wrappedX
           const y = height * (particle.y + wallShiftY + Math.sin(shimmer) * .018)
           const color = particle.hue > .66 ? '255, 225, 186' : particle.hue > .33 ? '188, 215, 255' : '218, 191, 255'
-          context.fillStyle = `rgba(${color}, ${Math.min(.95, particle.alpha * 1.7)})`
+          const pointRadius = Math.max(.85, particle.size * 1.1825 * (.78 + Math.sin(shimmer * 1.6) * .18)) * 3
+          const softRadius = pointRadius * 1.85
+          const reflection = context.createRadialGradient(x, y, 0, x, y, softRadius)
+          reflection.addColorStop(0, `rgba(${color}, ${Math.min(.68, particle.alpha * 1.22)})`)
+          reflection.addColorStop(.46, `rgba(${color}, ${particle.alpha * .72})`)
+          reflection.addColorStop(1, `rgba(${color}, 0)`)
+          context.fillStyle = reflection
           context.beginPath()
-          context.arc(x, y, particle.size * (.78 + Math.sin(shimmer * 1.6) * .18), 0, Math.PI * 2)
+          context.arc(x, y, softRadius, 0, Math.PI * 2)
           context.fill()
         })
       }
