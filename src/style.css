@@ -281,9 +281,9 @@ h3 { margin-bottom: .35rem; color: var(--orange); font-size: 2rem; line-height: 
 .song-list li > span, .song-list li > small { grid-column: 2; }
 .song-list li > span { align-self: end; }
 .song-list li > small { align-self: start; }
-.song-play { display: grid; grid-row: 1 / span 2; grid-column: 1; width: 2rem; height: 2rem; place-items: center; border-radius: 50%; background: var(--orange); transition: transform .2s ease, background .2s ease; }
-.song-play svg { width: 1.15rem; height: 1.15rem; }
-.song-play:hover, .song-play:focus-visible { background: var(--cream); transform: scale(1.1); }
+.song-play { display: grid; grid-row: 1 / span 2; grid-column: 1; width: 2rem; height: 2rem; place-items: center; border: 0; border-radius: 50%; background: var(--orange) url('/images/play-button.svg') center / 52% no-repeat; box-shadow: 0 1px 2px rgba(8, 3, 35, .45); transition: transform .2s ease, background-color .2s ease; }
+.song-play svg { display: none; }
+.song-play:hover, .song-play:focus-visible { background-color: var(--cream); transform: scale(1.1); }
 .song-list span { color: var(--cream); font-size: 1rem; font-weight: 800; }
 .song-list small { color: rgba(243, 240, 233, .7); font-size: .84rem; }
 #eventos { background: #0d0732; }
