@@ -16,7 +16,7 @@ document.querySelector('#app').innerHTML = `
       <a href="#repertorio" data-i18n="nav.repertoire">Repertorio</a>
       <a href="#eventos" data-i18n="nav.events">Eventos</a>
       <a href="#contacto" data-i18n="nav.contact">Contacto</a>
-      <label class="language-picker" for="language-select">
+      <div class="language-picker">
         <span class="visually-hidden" data-i18n="language.label">Idioma</span>
         <button class="language-toggle" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Idioma seleccionado">
           <img class="flag flag-es" src="/images/flags/es.svg" alt="">
@@ -26,7 +26,7 @@ document.querySelector('#app').innerHTML = `
           <button type="button" role="option" data-language="en" aria-label="English"><img class="flag flag-en" src="/images/flags/en.svg" alt=""></button>
           <button type="button" role="option" data-language="pl" aria-label="Polski"><img class="flag flag-pl" src="/images/flags/pl.svg" alt=""></button>
         </div>
-      </label>
+      </div>
     </nav>
   </header>
 
@@ -38,7 +38,7 @@ document.querySelector('#app').innerHTML = `
       <div class="hero-video-overlay" aria-hidden="true"></div>
       <div class="hero-copy">
         <p class="eyebrow" data-i18n="hero.eyebrow">Música en directo</p>
-        <h1 data-i18n="hero.title">Música atemporal.<br> Energía en vivo.</h1>
+        <h1 data-i18n="hero.title">Música atemporal.<br>Energía en vivo.</h1>
         <p class="intro" data-i18n="hero.intro">Funk, disco y house para bodas, eventos privados y festivales.</p>
         <a class="button" href="#contacto" data-i18n="hero.cta">Contactar con Blissline</a>
       </div>
@@ -119,9 +119,9 @@ document.querySelector('#app').innerHTML = `
 `
 
 const translations = {
-  es: { language: 'Idioma', nav: ['El show', 'Repertorio', 'Eventos', 'Contacto'], hero: ['Música en directo', 'Música atemporal.<br> Energía en vivo.', 'Funk, disco y house para bodas, eventos privados y festivales.', 'Contactar con Blissline'], show: ['Más que música en vivo', 'Un sonido que todos conocen', 'Canciones icónicas, músicos en vivo y un groove irresistible: una experiencia para conectar generaciones, culturas y nacionalidades.'], band: ['El grupo', 'Cuatro músicos, un mismo groove'], repertoire: ['El sonido', 'Ya conoces las canciones. Ahora vívelas en directo.', 'Desde clásicos atemporales del disco y el funk hasta la energía del house contemporáneo.', 'Ver repertorio en Spotify', 'Ver vídeos en directo'], events: ['Para cada celebración', 'Los grandes momentos se recuerdan por cómo suenan.'], contact: ['Contacto', 'Hablemos de tu evento', 'Cuéntanos qué tienes en mente y crearemos el sonido de la noche.'], features: [['Atemporal', 'Canciones que nunca se olvidan.'], ['Internacional', 'Música que cruza idiomas y culturas.'], ['En vivo', 'Músicos reales, interacción real, energía real.'], ['Versátil', 'Del cóctel elegante a una pista de baile llena.']], eventItems: ['Bodas', 'Eventos privados y corporativos', 'Festivales'], roles: ['Voz', 'Bajo', 'Saxofón', 'Percusión'] },
-  en: { language: 'Language', nav: ['The show', 'Repertoire', 'Events', 'Contact'], hero: ['Live music', 'Timeless music.<br> Live energy.', 'Funk, disco and house for weddings, private events and festivals.', 'Contact Blissline'], show: ['More than live music', 'A sound everyone knows', 'Iconic songs, live musicians and an irresistible groove: an experience that connects generations, cultures and nationalities.'], band: ['The band', 'Four musicians, one groove'], repertoire: ['The sound', 'You know the songs. Now experience them live.', 'From timeless disco and funk classics to the energy of contemporary house.', 'See the Spotify repertoire', 'Watch live videos'], events: ['For every celebration', 'Great moments are remembered by how they sound.'], contact: ['Contact', 'Let’s talk about your event', 'Tell us what you have in mind and we’ll create the sound of the night.'], features: [['Timeless', 'Songs you never forget.'], ['International', 'Music that crosses languages and cultures.'], ['Live', 'Real musicians, real interaction, real energy.'], ['Versatile', 'From an elegant cocktail to a packed dance floor.']], eventItems: ['Weddings', 'Private and corporate events', 'Festivals'], roles: ['Vocals', 'Bass', 'Saxophone', 'Percussion'] },
-  pl: { language: 'Język', nav: ['Show', 'Repertuar', 'Wydarzenia', 'Kontakt'], hero: ['Muzyka na żywo', 'Ponadczasowa muzyka.<br> Energia na żywo.', 'Funk, disco i house na wesela, prywatne wydarzenia i festiwale.', 'Skontaktuj się z Blissline'], show: ['Więcej niż muzyka na żywo', 'Brzmienie, które zna każdy', 'Ikoniczne utwory, muzycy na żywo i nieodparty groove: doświadczenie łączące pokolenia, kultury i narodowości.'], band: ['Zespół', 'Czterech muzyków, jeden groove'], repertoire: ['Brzmienie', 'Znasz te utwory. Teraz przeżyj je na żywo.', 'Od ponadczasowych klasyków disco i funku po energię współczesnego house’u.', 'Zobacz repertuar na Spotify', 'Zobacz nagrania na żywo'], events: ['Na każdą uroczystość', 'Wielkie chwile pamięta się po tym, jak brzmią.'], contact: ['Kontakt', 'Porozmawiajmy o Twoim wydarzeniu', 'Opowiedz nam o swoich planach, a stworzymy brzmienie tego wieczoru.'], features: [['Ponadczasowe', 'Piosenki, których się nie zapomina.'], ['Międzynarodowe', 'Muzyka przekraczająca języki i kultury.'], ['Na żywo', 'Prawdziwi muzycy, prawdziwa energia.'], ['Wszechstronne', 'Od eleganckiego koktajlu po pełny parkiet.']], eventItems: ['Wesela', 'Wydarzenia prywatne i firmowe', 'Festiwale'], roles: ['Wokal', 'Bas', 'Saksofon', 'Perkusja'] }
+  es: { language: 'Idioma', nav: ['El show', 'Repertorio', 'Eventos', 'Contacto'], hero: ['Música en directo', 'Música atemporal.<br>Energía en vivo.', 'Funk, disco y house para bodas, eventos privados y festivales.', 'Contactar con Blissline'], show: ['Más que música en vivo', 'Un sonido que todos conocen', 'Canciones icónicas, músicos en vivo y un groove irresistible: una experiencia para conectar generaciones, culturas y nacionalidades.'], band: ['El grupo', 'Cuatro músicos, un mismo groove'], repertoire: ['El sonido', 'Ya conoces las canciones. Ahora vívelas en directo.', 'Desde clásicos atemporales del disco y el funk hasta la energía del house contemporáneo.', 'Ver repertorio en Spotify', 'Ver vídeos en directo'], events: ['Para cada celebración', 'Los grandes momentos se recuerdan por cómo suenan.'], contact: ['Contacto', 'Hablemos de tu evento', 'Cuéntanos qué tienes en mente y crearemos el sonido de la noche.'], features: [['Atemporal', 'Canciones que nunca se olvidan.'], ['Internacional', 'Música que cruza idiomas y culturas.'], ['En vivo', 'Músicos reales, interacción real, energía real.'], ['Versátil', 'Del cóctel elegante a una pista de baile llena.']], eventItems: ['Bodas', 'Eventos privados y corporativos', 'Festivales'], roles: ['Voz', 'Bajo', 'Saxofón', 'Percusión'] },
+  en: { language: 'Language', nav: ['The show', 'Repertoire', 'Events', 'Contact'], hero: ['Live music', 'Timeless music.<br>Live energy.', 'Funk, disco and house for weddings, private events and festivals.', 'Contact Blissline'], show: ['More than live music', 'A sound everyone knows', 'Iconic songs, live musicians and an irresistible groove: an experience that connects generations, cultures and nationalities.'], band: ['The band', 'Four musicians, one groove'], repertoire: ['The sound', 'You know the songs. Now experience them live.', 'From timeless disco and funk classics to the energy of contemporary house.', 'See the Spotify repertoire', 'Watch live videos'], events: ['For every celebration', 'Great moments are remembered by how they sound.'], contact: ['Contact', 'Let’s talk about your event', 'Tell us what you have in mind and we’ll create the sound of the night.'], features: [['Timeless', 'Songs you never forget.'], ['International', 'Music that crosses languages and cultures.'], ['Live', 'Real musicians, real interaction, real energy.'], ['Versatile', 'From an elegant cocktail to a packed dance floor.']], eventItems: ['Weddings', 'Private and corporate events', 'Festivals'], roles: ['Vocals', 'Bass', 'Saxophone', 'Percussion'] },
+  pl: { language: 'Język', nav: ['Show', 'Repertuar', 'Wydarzenia', 'Kontakt'], hero: ['Muzyka na żywo', 'Ponadczasowa muzyka.<br>Energia na żywo.', 'Funk, disco i house na wesela, prywatne wydarzenia i festiwale.', 'Skontaktuj się z Blissline'], show: ['Więcej niż muzyka na żywo', 'Brzmienie, które zna każdy', 'Ikoniczne utwory, muzycy na żywo i nieodparty groove: doświadczenie łączące pokolenia, kultury i narodowości.'], band: ['Zespół', 'Czterech muzyków, jeden groove'], repertoire: ['Brzmienie', 'Znasz te utwory. Teraz przeżyj je na żywo.', 'Od ponadczasowych klasyków disco i funku po energię współczesnego house’u.', 'Zobacz repertuar na Spotify', 'Zobacz nagrania na żywo'], events: ['Na każdą uroczystość', 'Wielkie chwile pamięta się po tym, jak brzmią.'], contact: ['Kontakt', 'Porozmawiajmy o Twoim wydarzeniu', 'Opowiedz nam o swoich planach, a stworzymy brzmienie tego wieczoru.'], features: [['Ponadczasowe', 'Piosenki, których się nie zapomina.'], ['Międzynarodowe', 'Muzyka przekraczająca języki i kultury.'], ['Na żywo', 'Prawdziwi muzycy, prawdziwa energia.'], ['Wszechstronne', 'Od eleganckiego koktajlu po pełny parkiet.']], eventItems: ['Wesela', 'Wydarzenia prywatne i firmowe', 'Festiwale'], roles: ['Wokal', 'Bas', 'Saksofon', 'Perkusja'] }
 }
 
 const applyLanguage = (language) => {
@@ -134,8 +134,15 @@ const applyLanguage = (language) => {
   }
   document.querySelector('nav').setAttribute('aria-label', t.language)
   document.querySelectorAll('nav > a').forEach((el, i) => { el.textContent = t.nav[i] })
-  const groups = [['.hero-section .eyebrow', '.hero-section h1', '.hero-section .intro', '.hero-section .button', t.hero], ['#show .eyebrow', '#show h2', '#show > p', t.show], ['#integrantes .eyebrow', '#integrantes h2', null, t.band], ['#repertorio .eyebrow', '#repertorio h2', '#repertorio > p', t.repertoire], ['#eventos .eyebrow', '#eventos h2', null, t.events], ['#contacto .eyebrow', '#contacto h2', '#contacto > p', t.contact]]
-  groups.forEach(([a, b, c, values]) => [a, b, c].filter(Boolean).forEach((selector, i) => { const el = document.querySelector(selector); if (el) el.innerHTML = values[i] }))
+  const groups = [
+    [['.hero-section .eyebrow', '.hero-section h1', '.hero-section .intro', '.hero-section .button'], t.hero],
+    [['#show .eyebrow', '#show h2', '#show > p'], t.show],
+    [['#integrantes .eyebrow', '#integrantes h2'], t.band],
+    [['#repertorio .eyebrow', '#repertorio h2', '#repertorio > p'], t.repertoire],
+    [['#eventos .eyebrow', '#eventos h2'], t.events],
+    [['#contacto .eyebrow', '#contacto h2', '#contacto > p'], t.contact]
+  ]
+  groups.forEach(([selectors, values]) => selectors.forEach((selector, i) => { const el = document.querySelector(selector); if (el) el.innerHTML = values[i] }))
   document.querySelectorAll('.feature-list li').forEach((el, i) => { el.querySelector('strong').textContent = t.features[i][0]; el.querySelector('span').textContent = t.features[i][1] })
   document.querySelectorAll('.event-list li').forEach((el, i) => { el.textContent = t.eventItems[i] })
   document.querySelectorAll('.member-role').forEach((el, i) => { el.textContent = t.roles[i] })
@@ -153,11 +160,17 @@ const setLanguageMenuState = (open) => {
 }
 const savedLanguage = localStorage.getItem('blissline-language') || 'es'
 applyLanguage(savedLanguage)
-document.querySelectorAll('[data-language]').forEach((option) => option.addEventListener('click', () => {
+document.querySelectorAll('[data-language]').forEach((option) => option.addEventListener('click', (event) => {
+  event.preventDefault()
+  event.stopPropagation()
   applyLanguage(option.dataset.language)
   setLanguageMenuState(false)
 }))
-languageToggle.addEventListener('click', () => setLanguageMenuState(!languageMenu.classList.contains('is-open')))
+languageToggle.addEventListener('click', (event) => {
+  event.preventDefault()
+  event.stopPropagation()
+  setLanguageMenuState(!languageMenu.classList.contains('is-open'))
+})
 document.addEventListener('click', (event) => { if (!event.target.closest('.language-picker')) setLanguageMenuState(false) })
 
 const canvas = document.querySelector('#disco-ball-canvas')
