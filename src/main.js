@@ -1,5 +1,7 @@
 import './style.css'
 
+const assetBase = import.meta.env.BASE_URL
+
 document.querySelector('#app').innerHTML = `
   <a class="skip-link" href="#contenido">Saltar al contenido</a>
   <div class="disco-ball" aria-hidden="true">
@@ -9,7 +11,7 @@ document.querySelector('#app').innerHTML = `
   <header class="site-header">
     <canvas class="header-reflections" aria-hidden="true"></canvas>
     <a class="brand" href="#inicio" aria-label="Blissline, inicio">
-      <img src="/images/blissline-logo.png" alt="Blissline">
+      <img src="${assetBase}images/blissline-logo.png" alt="Blissline">
     </a>
     <nav aria-label="Navegación principal">
       <a href="#show" data-i18n="nav.show">El show</a>
@@ -19,12 +21,12 @@ document.querySelector('#app').innerHTML = `
       <div class="language-picker">
         <span class="visually-hidden" data-i18n="language.label">Idioma</span>
         <button class="language-toggle" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Idioma seleccionado">
-          <img class="flag flag-es" src="/images/flags/es.svg" alt="">
+          <img class="flag flag-es" src="${assetBase}images/flags/es.svg" alt="">
         </button>
         <div class="language-menu" role="listbox" aria-label="Seleccionar idioma">
-          <button type="button" role="option" data-language="es" aria-label="Español"><img class="flag flag-es" src="/images/flags/es.svg" alt=""></button>
-          <button type="button" role="option" data-language="en" aria-label="English"><img class="flag flag-en" src="/images/flags/en.svg" alt=""></button>
-          <button type="button" role="option" data-language="pl" aria-label="Polski"><img class="flag flag-pl" src="/images/flags/pl.svg" alt=""></button>
+          <button type="button" role="option" data-language="es" aria-label="Español"><img class="flag flag-es" src="${assetBase}images/flags/es.svg" alt=""></button>
+          <button type="button" role="option" data-language="en" aria-label="English"><img class="flag flag-en" src="${assetBase}images/flags/en.svg" alt=""></button>
+          <button type="button" role="option" data-language="pl" aria-label="Polski"><img class="flag flag-pl" src="${assetBase}images/flags/pl.svg" alt=""></button>
         </div>
       </div>
     </nav>
@@ -37,7 +39,7 @@ document.querySelector('#app').innerHTML = `
   <main id="contenido">
     <section class="hero-section" id="inicio">
       <video class="hero-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
-        <source src="/videos/blisslineMainVideo.mp4" type="video/mp4">
+        <source src="${assetBase}videos/blisslineMainVideo.mp4" type="video/mp4">
       </video>
       <div class="hero-video-overlay" aria-hidden="true"></div>
       <div class="hero-copy">
@@ -65,22 +67,22 @@ document.querySelector('#app').innerHTML = `
       <div class="members">
         <article>
           <div class="member-heading"><h3>Ada Nasiadka</h3><p class="member-role">Voz</p></div>
-          <div class="member-photo"><img src="/images/ada.png" alt="Ada Nasiadka cantando"></div>
+          <div class="member-photo"><img src="${assetBase}images/ada.png" alt="Ada Nasiadka cantando"></div>
           <p class="member-description">Ada pone voz y carácter a cada canción, conectando con el público desde la primera nota.</p>
         </article>
         <article>
           <div class="member-heading"><h3>Luis Albarrán</h3><p class="member-role">Bajo</p></div>
-          <div class="member-photo"><img src="/images/luis.png" alt="Luis Albarrán tocando el bajo"></div>
+          <div class="member-photo"><img src="${assetBase}images/luis.png" alt="Luis Albarrán tocando el bajo"></div>
           <p class="member-description">Ada pone voz y carácter a cada canción, conectando con el público desde la primera nota.</p>
         </article>
         <article>
           <div class="member-heading"><h3>Tino Bonet</h3><p class="member-role">Saxofón</p></div>
-          <div class="member-photo"><img src="/images/tino.png" alt="Tino Bonet tocando el saxofón"></div>
+          <div class="member-photo"><img src="${assetBase}images/tino.png" alt="Tino Bonet tocando el saxofón"></div>
           <p class="member-description">Tino aporta melodías brillantes y ese toque de soul que convierte cada directo en algo especial.</p>
         </article>
         <article>
           <div class="member-heading"><h3>Mauro Magarelli</h3><p class="member-role">Percusión</p></div>
-          <div class="member-photo"><img src="/images/mauro.png" alt="Mauro Magarelli tocando las congas"></div>
+          <div class="member-photo"><img src="${assetBase}images/mauro.png" alt="Mauro Magarelli tocando las congas"></div>
           <p class="member-description">Mauro enciende el ritmo con sus manos y transforma cualquier espacio en una celebración.</p>
         </article>
       </div>
@@ -169,7 +171,7 @@ const applyLanguage = (language) => {
   const toggleFlag = document.querySelector('.language-toggle .flag')
   if (toggleFlag) {
     toggleFlag.className = `flag flag-${language}`
-    toggleFlag.src = `/images/flags/${language}.svg`
+    toggleFlag.src = `${assetBase}images/flags/${language}.svg`
   }
   document.querySelector('nav').setAttribute('aria-label', t.language)
   document.querySelectorAll('nav > a').forEach((el, i) => { el.textContent = t.nav[i] })
