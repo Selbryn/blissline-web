@@ -223,6 +223,50 @@ languageToggle.addEventListener('click', (event) => {
 })
 document.addEventListener('click', (event) => { if (!event.target.closest('.language-picker')) setLanguageMenuState(false) })
 
+const membersGrid = document.querySelector('.members')
+if (membersGrid) {
+  const visibilityObserver = new IntersectionObserver(([entry]) => {
+    membersGrid.classList.toggle('is-visible', entry.isIntersecting)
+  }, { rootMargin: '120px 0px', threshold: .05 })
+  visibilityObserver.observe(membersGrid)
+
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    document.querySelectorAll('.members article').forEach((card) => {
+      let pointerFrame = 0
+      let pointerX = 0
+      let pointerY = 0
+
+      const resetCard = () => {
+        if (pointerFrame) cancelAnimationFrame(pointerFrame)
+        pointerFrame = 0
+        card.style.setProperty('--card-rotate-x', '0deg')
+        card.style.setProperty('--card-rotate-y', '0deg')
+        card.style.setProperty('--foil-x', '50%')
+        card.style.setProperty('--foil-y', '50%')
+      }
+
+      card.addEventListener('pointermove', (event) => {
+        pointerX = event.clientX
+        pointerY = event.clientY
+        if (pointerFrame) return
+        pointerFrame = requestAnimationFrame(() => {
+          const bounds = card.getBoundingClientRect()
+          const x = (pointerX - bounds.left) / bounds.width
+          const y = (pointerY - bounds.top) / bounds.height
+          card.style.setProperty('--card-rotate-x', `${(0.5 - y) * 7}deg`)
+          card.style.setProperty('--card-rotate-y', `${(x - 0.5) * 7}deg`)
+          card.style.setProperty('--foil-x', `${x * 100}%`)
+          card.style.setProperty('--foil-y', `${y * 100}%`)
+          pointerFrame = 0
+        })
+      }, { passive: true })
+
+      card.addEventListener('pointerleave', resetCard)
+      card.addEventListener('pointercancel', resetCard)
+    })
+  }
+}
+
 const canvas = document.querySelector('#disco-ball-canvas')
 const gl = canvas.getContext('webgl', { alpha: true, antialias: true })
 
