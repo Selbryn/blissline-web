@@ -74,7 +74,7 @@ document.querySelector('#app').innerHTML = `
         <article>
           <div class="member-heading"><h3>Luis Albarrán</h3><p class="member-role">Bajo</p></div>
           <div class="member-photo"><img src="${assetBase}images/luis.png" alt="Luis Albarrán tocando el bajo"></div>
-          <p class="member-description">Ada pone voz y carácter a cada canción, conectando con el público desde la primera nota.</p>
+          <p class="member-description">Luis sostiene el groove con precisión y carácter, dando fuerza y elegancia a cada canción.</p>
         </article>
         <article>
           <div class="member-heading"><h3>Tino Bonet</h3><p class="member-role">Saxofón</p></div>
@@ -438,6 +438,7 @@ if (gl) {
     const pointer = gl.getUniformLocation(program, 'u_pointer')
     const header = document.querySelector('.site-header')
     const headerReflections = document.querySelector('.header-reflections')
+    const context = headerReflections?.getContext('2d')
     const reflectionParticles = Array.from({ length: 88 }, (_, index) => {
       const seed = index * 12.9898
       return {
@@ -450,47 +451,102 @@ if (gl) {
         hue: ((Math.sin(seed * 4.19) + 1) / 2)
       }
     })
+    // Reuse each particle's light profile; position and radius are transforms.
+    // This preserves the radial falloff without allocating 88 gradients per frame.
+    if (context) {
+      for (const particle of reflectionParticles) {
+        const color = particle.hue > .66 ? '255, 225, 186' : particle.hue > .33 ? '188, 215, 255' : '218, 191, 255'
+        const gradient = context.createRadialGradient(0, 0, 0, 0, 0, 1)
+        gradient.addColorStop(0, `rgba(${color}, ${Math.min(.68, particle.alpha * 1.22)})`)
+        gradient.addColorStop(.46, `rgba(${color}, ${particle.alpha * .72})`)
+        gradient.addColorStop(1, `rgba(${color}, 0)`)
+        particle.gradient = gradient
+      }
+    }
     const pointerTarget = { x: 0, y: 0 }
     const pointerCurrent = { x: 0, y: 0 }
     const headerPointerTarget = { x: 0, y: 0 }
     const headerPointerCurrent = { x: 0, y: 0 }
+    let frame = 0
+    let geometryDirty = true
+    let bounds
+    let width = 0
+    let height = 0
+    let pixelRatio = 1
+    let pointerPosition
+    let lastReflectionX
+    let lastReflectionY
+
+    // One render per display frame, and no animation work once the cursor settles.
+    const scheduleDraw = () => {
+      if (!frame && !document.hidden) frame = requestAnimationFrame(draw)
+    }
+    const invalidateGeometry = () => {
+      geometryDirty = true
+      scheduleDraw()
+    }
+    const easePointer = (current, target, factor) => {
+      for (const axis of ['x', 'y']) {
+        const delta = target[axis] - current[axis]
+        current[axis] = Math.abs(delta) < .0001 ? target[axis] : current[axis] + delta * factor
+      }
+      return current.x !== target.x || current.y !== target.y
+    }
+
+    gl.useProgram(program)
+    gl.enableVertexAttribArray(position)
+    gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0)
+    header.style.setProperty('--reflection-angle', '90deg')
 
     const draw = () => {
-      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2)
-      const size = Math.round(canvas.clientWidth * pixelRatio)
+      frame = 0
+      // Read layout together, only after a resize (the ball is fixed on scroll).
+      if (geometryDirty) {
+        pixelRatio = Math.min(window.devicePixelRatio || 1, 2)
+        bounds = canvas.getBoundingClientRect()
+        width = header.clientWidth
+        height = header.clientHeight
+        geometryDirty = false
+      }
+      if (pointerPosition) {
+        const screenX = Math.max(0, Math.min(1, pointerPosition.x / window.innerWidth))
+        const screenY = Math.max(0, Math.min(1, pointerPosition.y / window.innerHeight))
+        headerPointerTarget.x = (pointerPosition.x / window.innerWidth) * 2 - 1
+        headerPointerTarget.y = 1 - (pointerPosition.y / window.innerHeight) * 2
+        const visibleLeft = Math.max(0, bounds.left)
+        const visibleRight = Math.min(window.innerWidth, bounds.right)
+        const visibleTop = Math.max(0, bounds.top)
+        const visibleBottom = Math.min(window.innerHeight, bounds.bottom)
+        const projectedX = visibleLeft + screenX * Math.max(0, visibleRight - visibleLeft)
+        const projectedY = visibleTop + screenY * Math.max(0, visibleBottom - visibleTop)
+        pointerTarget.x = ((projectedX - bounds.left) / bounds.width) * 2 - 1
+        pointerTarget.y = 1 - ((projectedY - bounds.top) / bounds.height) * 2
+      }
+      const size = Math.round(bounds.width * pixelRatio)
       if (canvas.width !== size || canvas.height !== size) {
         canvas.width = size
         canvas.height = size
+        gl.viewport(0, 0, size, size)
       }
-      gl.viewport(0, 0, canvas.width, canvas.height)
-      gl.useProgram(program)
-      gl.enableVertexAttribArray(position)
-      gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0)
       const rotationTravel = window.scrollY * .002
       const rotationValue = rotationTravel % (Math.PI * 2)
       gl.uniform1f(rotation, rotationValue)
-      pointerCurrent.x += (pointerTarget.x - pointerCurrent.x) * .14
-      pointerCurrent.y += (pointerTarget.y - pointerCurrent.y) * .14
-      headerPointerCurrent.x += (headerPointerTarget.x - headerPointerCurrent.x) * .12
-      headerPointerCurrent.y += (headerPointerTarget.y - headerPointerCurrent.y) * .12
+      const ballMoving = easePointer(pointerCurrent, pointerTarget, .14)
+      const headerMoving = easePointer(headerPointerCurrent, headerPointerTarget, .12)
       gl.uniform2f(pointer, pointerCurrent.x, pointerCurrent.y)
       if (header) {
         const reflectionX = 50 + headerPointerCurrent.x * 8
         const reflectionY = 42 + headerPointerCurrent.y * 17
-        const reflectionAngle = 90
-        header.style.setProperty('--reflection-x', `${reflectionX}%`)
-        header.style.setProperty('--reflection-y', `${reflectionY}%`)
-        header.style.setProperty('--reflection-angle', `${reflectionAngle}deg`)
+        if (reflectionX !== lastReflectionX) header.style.setProperty('--reflection-x', `${reflectionX}%`)
+        if (reflectionY !== lastReflectionY) header.style.setProperty('--reflection-y', `${reflectionY}%`)
+        lastReflectionX = reflectionX
+        lastReflectionY = reflectionY
       }
-      if (headerReflections && header) {
-        const pixelRatio = Math.min(window.devicePixelRatio || 1, 2)
-        const width = header.clientWidth
-        const height = header.clientHeight
+      if (context) {
         if (headerReflections.width !== Math.round(width * pixelRatio) || headerReflections.height !== Math.round(height * pixelRatio)) {
           headerReflections.width = Math.round(width * pixelRatio)
           headerReflections.height = Math.round(height * pixelRatio)
         }
-        const context = headerReflections.getContext('2d')
         context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
         context.clearRect(0, 0, width, height)
         const wallShiftX = headerPointerCurrent.x * .045
@@ -503,48 +559,34 @@ if (gl) {
           const shimmer = rotationTravel * particle.drift + particle.phase
           const x = width * wrappedX
           const y = height * (particle.y + wallShiftY + Math.sin(shimmer) * .018)
-          const color = particle.hue > .66 ? '255, 225, 186' : particle.hue > .33 ? '188, 215, 255' : '218, 191, 255'
           const pointRadius = Math.max(.85, particle.size * 1.1825 * (.78 + Math.sin(shimmer * 1.6) * .18)) * 3
           const softRadius = pointRadius * 1.85
-          const reflection = context.createRadialGradient(x, y, 0, x, y, softRadius)
-          reflection.addColorStop(0, `rgba(${color}, ${Math.min(.68, particle.alpha * 1.22)})`)
-          reflection.addColorStop(.46, `rgba(${color}, ${particle.alpha * .72})`)
-          reflection.addColorStop(1, `rgba(${color}, 0)`)
-          context.fillStyle = reflection
+          context.setTransform(pixelRatio * softRadius, 0, 0, pixelRatio * softRadius, x * pixelRatio, y * pixelRatio)
+          context.fillStyle = particle.gradient
           context.beginPath()
-          context.arc(x, y, softRadius, 0, Math.PI * 2)
+          context.arc(0, 0, 1, 0, Math.PI * 2)
           context.fill()
         })
       }
       gl.drawArrays(gl.TRIANGLES, 0, 6)
+      if (ballMoving || headerMoving) scheduleDraw()
     }
 
-    window.addEventListener('scroll', draw, { passive: true })
-    window.addEventListener('resize', draw)
+    window.addEventListener('scroll', scheduleDraw, { passive: true })
+    window.addEventListener('resize', invalidateGeometry)
+    const resizeObserver = new ResizeObserver(invalidateGeometry)
+    resizeObserver.observe(canvas)
+    resizeObserver.observe(header)
     window.addEventListener('pointermove', (event) => {
-      headerPointerTarget.x = (event.clientX / window.innerWidth) * 2 - 1
-      headerPointerTarget.y = 1 - (event.clientY / window.innerHeight) * 2
-      const bounds = canvas.getBoundingClientRect()
-      const visibleLeft = Math.max(0, bounds.left)
-      const visibleRight = Math.min(window.innerWidth, bounds.right)
-      const visibleTop = Math.max(0, bounds.top)
-      const visibleBottom = Math.min(window.innerHeight, bounds.bottom)
-      const screenX = Math.max(0, Math.min(1, event.clientX / window.innerWidth))
-      const screenY = Math.max(0, Math.min(1, event.clientY / window.innerHeight))
-
-      // Proyecta toda la pantalla solamente sobre la porción visible del canvas.
-      // La coordenada Y de WebGL crece desde abajo, al contrario que la del DOM.
-      const projectedX = visibleLeft + screenX * Math.max(0, visibleRight - visibleLeft)
-      const projectedY = visibleTop + screenY * Math.max(0, visibleBottom - visibleTop)
-      pointerTarget.x = ((projectedX - bounds.left) / bounds.width) * 2.0 - 1.0
-      pointerTarget.y = 1.0 - ((projectedY - bounds.top) / bounds.height) * 2.0
-      draw()
+      pointerPosition = { x: event.clientX, y: event.clientY }
+      scheduleDraw()
     }, { passive: true })
-    const animatePointer = () => {
-      draw()
-      requestAnimationFrame(animatePointer)
-    }
-    requestAnimationFrame(animatePointer)
-    draw()
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        cancelAnimationFrame(frame)
+        frame = 0
+      } else invalidateGeometry()
+    })
+    scheduleDraw()
   }
 }
