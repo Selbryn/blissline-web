@@ -324,27 +324,23 @@ h3 { margin-bottom: .35rem; color: var(--orange); font-size: 2rem; line-height: 
   --parallax-x: 0px;
   --parallax-y: 0px;
   position: relative;
-  isolation: isolate;
-  display: flex;
+  display: block;
   min-width: 0;
   overflow: visible;
-  flex-direction: column;
-  padding-bottom: 8rem;
-  border: 2px solid rgba(243, 240, 233, .34);
-  background: linear-gradient(150deg, rgba(255, 236, 196, .12), rgba(75, 84, 168, .2) 32%, rgba(22, 25, 67, .7) 76%);
-  box-shadow: inset 0 0 0 1px rgba(125, 167, 255, .22), 0 1.25rem 2.5rem rgba(5, 8, 34, .22);
   transform: perspective(75rem) rotateX(var(--card-rotate-x)) rotateY(var(--card-rotate-y)) scale(1);
   transform-style: preserve-3d;
   transition: transform .22s ease-out, box-shadow .22s ease-out, border-color .22s ease-out;
-  will-change: transform;
 }
-.members article::before {
+/* Reflect screen-space pointer coordinates into the reversed card's local space. */
+.member-rotor { --light-x: var(--foil-x); }
+.members article[aria-pressed="true"] .member-rotor { --light-x: calc(100% - var(--foil-x)); }
+.member-rotor::before {
   position: absolute;
   z-index: 3;
   inset: 0;
   border: 3px solid transparent;
   background:
-    radial-gradient(circle at var(--foil-x) var(--foil-y), rgba(255, 255, 247, 1) 0 2%, rgba(166, 214, 255, .95) 7%, rgba(255, 207, 135, .78) 14%, transparent 29%) border-box,
+    radial-gradient(circle at var(--light-x) var(--foil-y), rgba(255, 247, 224, .38) 0%, rgba(183, 210, 240, .20) 16%, rgba(237, 218, 184, .07) 32%, transparent 52%) border-box,
     linear-gradient(120deg, rgba(255, 226, 158, .92), rgba(137, 189, 255, .72) 27%, rgba(224, 153, 255, .76) 51%, rgba(255, 218, 146, .9) 74%, rgba(155, 207, 255, .72)) border-box;
   background-position: 0 0, 0% 50%;
   background-size: 100% 100%, 300% 300%;
@@ -357,21 +353,22 @@ h3 { margin-bottom: .35rem; color: var(--orange); font-size: 2rem; line-height: 
   opacity: .86;
   pointer-events: none;
 }
-.members article::after {
+.member-rotor::after {
   position: absolute;
   z-index: 2;
   inset: 0;
-  background: radial-gradient(circle at var(--foil-x) var(--foil-y), rgba(255, 242, 205, .33), rgba(159, 194, 255, .12) 14%, transparent 36%);
+  background: radial-gradient(circle at var(--light-x) var(--foil-y), rgba(242, 237, 223, .14) 0%, rgba(177, 198, 232, .07) 22%, rgba(177, 198, 232, .02) 40%, transparent 62%);
   content: '';
   mix-blend-mode: screen;
-  opacity: .45;
+  opacity: .25;
   pointer-events: none;
   transition: opacity .22s ease;
 }
-.members article:hover, .members article:focus-within { border-color: rgba(255, 233, 178, .7); box-shadow: inset 0 0 0 1px rgba(255, 241, 194, .36), 0 0 1.2rem rgba(150, 187, 255, .18), 0 1.8rem 3.8rem rgba(8, 11, 46, .48); transform: perspective(75rem) rotateX(var(--card-rotate-x)) rotateY(var(--card-rotate-y)) scale(1.035); }
-.members.is-visible article::before { animation-play-state: running; }
-.members.is-visible article:hover::before, .members.is-visible article:focus-within::before { animation-duration: 2.8s; }
-.members article:hover::after, .members article:focus-within::after { opacity: .9; }
+.members article:hover, .members article:focus-within { transform: perspective(75rem) rotateX(var(--card-rotate-x)) rotateY(var(--card-rotate-y)) scale(1.035); }
+.members article:hover .member-rotor, .members article:focus-within .member-rotor { will-change: transform; }
+.members.is-visible .member-rotor::before { animation-play-state: running; }
+.members.is-visible article:hover .member-rotor::before, .members.is-visible article:focus-within .member-rotor::before { animation-duration: 2.8s; }
+.members article:hover .member-rotor::after, .members article:focus-within .member-rotor::after { opacity: .5; }
 .member-heading { position: absolute; z-index: 6; top: 0; right: 0; left: 0; padding: 1.5rem; text-shadow: 0 .15rem .7rem rgba(6, 8, 35, .75); transform: translate3d(var(--parallax-x), var(--parallax-y), 3.5rem); transition: transform .18s ease-out; }
 .member-heading h3 { margin: 0; font-family: 'Bebas Neue', Impact, sans-serif; font-size: 1.8rem; font-weight: 400; letter-spacing: .04em; line-height: .95; text-transform: uppercase; }
 .member-heading .member-role { margin: .35rem 0 0; color: var(--orange); font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
@@ -388,6 +385,25 @@ h3 { margin-bottom: .35rem; color: var(--orange); font-size: 2rem; line-height: 
   0% { background-position: 0 0, 0% 35%; }
   50% { background-position: 0 0, 100% 65%; }
   100% { background-position: 0 0, 15% 100%; }
+}
+
+/* Stable hit area for tilt; the complete framed card rotates inside it. */
+.members article { padding-bottom: 0; cursor: pointer; perspective: 75rem; }
+.members article:focus-visible { outline: 2px solid var(--cream); outline-offset: 6px; }
+.member-rotor { position: relative; width: 100%; min-width: 0; height: calc(32rem + 4px); flex: 0 0 auto; border: 2px solid rgba(243, 240, 233, .34); box-shadow: inset 0 0 0 1px rgba(125, 167, 255, .22), 0 1.25rem 2.5rem rgba(5, 8, 34, .22); transform-style: preserve-3d; transform: rotateY(var(--flip-angle, 0deg)); transition: transform .75s cubic-bezier(.22, .65, .3, 1), box-shadow .22s ease-out; }
+.members article:hover .member-rotor, .members article:focus-within .member-rotor { box-shadow: inset 0 0 0 1px rgba(255, 241, 194, .36), 0 0 1.2rem rgba(150, 187, 255, .18), 0 1.8rem 3.8rem rgba(8, 11, 46, .48); }
+.member-front { position: absolute; inset: 0; min-width: 0; display: flex; flex-direction: column; padding-bottom: 8rem; background: linear-gradient(145deg, #303b68, #151b3c); transform-style: preserve-3d; }
+.member-front, .member-back { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.member-front > * { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+/* Keep the 3D chain unflattened and give each plane a distinct cursor travel. */
+.member-heading { transform: translate3d(calc(var(--parallax-x) * 1.5), calc(var(--parallax-y) * 1.5), 4.5rem); }
+.member-photo { transform: translate3d(calc(var(--parallax-x) * .45), calc(var(--parallax-y) * .45), 2rem); }
+.member-description { transform: translate3d(calc(var(--parallax-x) * .8), calc(var(--parallax-y) * .8), 2.75rem); }
+.member-back { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 2rem; text-align: center; background: linear-gradient(145deg, #303b68, #151b3c); transform: rotateY(180deg); }
+.member-back h3 { font-size: 2.2rem; }
+.member-back p { margin: 1rem 0 0; color: var(--cream); line-height: 1.7; }
+@media (prefers-reduced-motion: reduce) {
+  .member-rotor { transition: none; }
 }
 
 .event-list { display: flex; flex-wrap: wrap; gap: .75rem; margin: 2.25rem 0 0; }
@@ -413,14 +429,14 @@ h3 { margin-bottom: .35rem; color: var(--orange); font-size: 2rem; line-height: 
 
 @media (prefers-reduced-motion: reduce) {
   .members article { transition: none; transform: none; }
-  .members article::before { animation: none; }
+  .member-rotor::before { animation: none; }
   .members article:hover, .members article:focus-within { transform: none; }
   .member-heading, .member-photo, .member-description { transform: none; transition: none; }
 }
 
 @media (hover: none), (pointer: coarse) {
   .members article, .members article:hover, .members article:focus-within { transform: none; }
-  .members article::before { animation: none; }
+  .member-rotor::before { animation: none; }
   .member-heading, .member-photo, .member-description { transform: none; }
 }
 

@@ -225,12 +225,51 @@ document.addEventListener('click', (event) => { if (!event.target.closest('.lang
 
 const membersGrid = document.querySelector('.members')
 if (membersGrid) {
+  membersGrid.querySelectorAll('article').forEach((card) => {
+    const name = card.querySelector('h3').textContent
+    const rotor = document.createElement('div')
+    rotor.className = 'member-rotor'
+    const front = document.createElement('div')
+    front.className = 'member-front'
+    front.append(...card.childNodes)
+    const back = document.createElement('div')
+    back.className = 'member-back'
+    const title = document.createElement('h3')
+    title.textContent = name
+    const copy = document.createElement('p')
+    copy.textContent = 'Texto de prueba. Aquí podrás conocer más sobre este artista y su historia con Blissline.'
+    back.append(title, copy)
+    back.setAttribute('aria-hidden', 'true')
+    rotor.append(front, back)
+    card.append(rotor)
+    card.tabIndex = 0
+    card.setAttribute('role', 'button')
+    card.setAttribute('aria-label', name)
+    card.setAttribute('aria-pressed', 'false')
+    let turns = 0
+    const flip = () => {
+      turns += 1
+      const flipped = turns % 2 === 1
+      card.style.setProperty('--flip-angle', `${turns * 180}deg`)
+      card.setAttribute('aria-pressed', String(flipped))
+      front.setAttribute('aria-hidden', String(flipped))
+      back.setAttribute('aria-hidden', String(!flipped))
+    }
+    card.addEventListener('click', flip)
+    card.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault()
+        if (!event.repeat) flip()
+      }
+    })
+  })
   const visibilityObserver = new IntersectionObserver(([entry]) => {
     membersGrid.classList.toggle('is-visible', entry.isIntersecting)
   }, { rootMargin: '120px 0px', threshold: .05 })
   visibilityObserver.observe(membersGrid)
 
-  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+  const cardMotion = window.matchMedia('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)')
+  if (cardMotion.matches) {
     document.querySelectorAll('.members article').forEach((card) => {
       let pointerFrame = 0
       let pointerX = 0
@@ -248,19 +287,23 @@ if (membersGrid) {
       }
 
       card.addEventListener('pointermove', (event) => {
+        if (!cardMotion.matches || event.pointerType === 'touch') {
+          resetCard()
+          return
+        }
         pointerX = event.clientX
         pointerY = event.clientY
         if (pointerFrame) return
         pointerFrame = requestAnimationFrame(() => {
           const bounds = card.getBoundingClientRect()
-          const x = (pointerX - bounds.left) / bounds.width
-          const y = (pointerY - bounds.top) / bounds.height
+          const x = Math.max(0, Math.min(1, (pointerX - bounds.left) / bounds.width))
+          const y = Math.max(0, Math.min(1, (pointerY - bounds.top) / bounds.height))
           card.style.setProperty('--card-rotate-x', `${(0.5 - y) * 7}deg`)
           card.style.setProperty('--card-rotate-y', `${(x - 0.5) * 7}deg`)
           card.style.setProperty('--foil-x', `${x * 100}%`)
           card.style.setProperty('--foil-y', `${y * 100}%`)
-          card.style.setProperty('--parallax-x', `${(x - 0.5) * 8}px`)
-          card.style.setProperty('--parallax-y', `${(y - 0.5) * 8}px`)
+          card.style.setProperty('--parallax-x', `${(x - 0.5) * 12}px`)
+          card.style.setProperty('--parallax-y', `${(y - 0.5) * 12}px`)
           pointerFrame = 0
         })
       }, { passive: true })
