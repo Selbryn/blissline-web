@@ -15,6 +15,7 @@ document.querySelector('#app').innerHTML = `
     </a>
     <nav aria-label="Navegación principal">
       <a href="#show" data-i18n="nav.show">El show</a>
+      <a href="#banda" data-i18n="nav.band">La banda</a>
       <a href="#repertorio" data-i18n="nav.repertoire">Repertorio</a>
       <a href="#eventos" data-i18n="nav.events">Eventos</a>
       <a href="#contacto" data-i18n="nav.contact">Contacto</a>
@@ -61,7 +62,7 @@ document.querySelector('#app').innerHTML = `
       </ul>
     </section>
 
-    <section class="content-section" id="integrantes">
+    <section class="content-section" id="banda">
       <p class="eyebrow" data-i18n="band.eyebrow">El grupo</p>
       <h2 data-i18n="band.title">Cuatro músicos, un mismo groove</h2>
       <div class="members">
@@ -165,6 +166,12 @@ const translations = {
   pl: { language: 'Język', nav: ['Show', 'Repertuar', 'Wydarzenia', 'Kontakt'], hero: ['Muzyka na żywo', 'Ponadczasowa muzyka.<br>Energia na żywo.', 'Funk, disco i house na wesela, prywatne wydarzenia i festiwale.', 'Skontaktuj się z Blissline'], show: ['Więcej niż muzyka na żywo', 'Brzmienie, które zna każdy', 'Ikoniczne utwory, muzycy na żywo i nieodparty groove: doświadczenie łączące pokolenia, kultury i narodowości.'], band: ['Zespół', 'Czterech muzyków, jeden groove'], repertoire: ['Brzmienie', 'Znasz te utwory. Teraz przeżyj je na żywo.', 'Od ponadczasowych klasyków disco i funku po energię współczesnego house’u.', 'Posłuchaj repertuaru', 'Nasz koncert na żywo'], events: ['Na każdą uroczystość', 'Wielkie chwile pamięta się po tym, jak brzmią.'], contact: ['Kontakt', 'Porozmawiajmy o Twoim wydarzeniu', 'Opowiedz nam o swoich planach, a stworzymy brzmienie tego wieczoru.'], features: [['Ponadczasowe', 'Piosenki, których się nie zapomina.'], ['Międzynarodowe', 'Muzyka przekraczająca języki i kultury.'], ['Na żywo', 'Prawdziwi muzycy, prawdziwa energia.'], ['Wszechstronne', 'Od eleganckiego koktajlu po pełny parkiet.']], eventItems: ['Wesela', 'Wydarzenia prywatne i firmowe', 'Festiwale'], roles: ['Wokal', 'Bas', 'Saksofon', 'Perkusja'] }
 }
 
+const navLabels = {
+  es: ['El show', 'La banda', 'Repertorio', 'Eventos', 'Contacto'],
+  en: ['The show', 'The band', 'Repertoire', 'Events', 'Contact'],
+  pl: ['Show', 'Zespół', 'Repertuar', 'Wydarzenia', 'Kontakt']
+}
+
 const applyLanguage = (language) => {
   const t = translations[language] || translations.es
   document.documentElement.lang = language
@@ -174,11 +181,11 @@ const applyLanguage = (language) => {
     toggleFlag.src = `${assetBase}images/flags/${language}.svg`
   }
   document.querySelector('nav').setAttribute('aria-label', t.language)
-  document.querySelectorAll('nav > a').forEach((el, i) => { el.textContent = t.nav[i] })
+  document.querySelectorAll('nav > a').forEach((el, i) => { el.textContent = navLabels[language][i] })
   const groups = [
     [['.hero-section .eyebrow', '.hero-section h1', '.hero-section .intro'], t.hero],
     [['#show .eyebrow', '#show h2', '#show > p'], t.show],
-    [['#integrantes .eyebrow', '#integrantes h2'], t.band],
+    [['#banda .eyebrow', '#banda h2'], t.band],
     [['#repertorio .eyebrow', '#repertorio h2', '#repertorio > p'], t.repertoire],
     [['#eventos .eyebrow', '#eventos h2'], t.events],
     [['#contacto .eyebrow', '#contacto h2', '#contacto > p'], t.contact]
