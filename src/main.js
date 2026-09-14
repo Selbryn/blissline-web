@@ -227,6 +227,9 @@ const membersGrid = document.querySelector('.members')
 if (membersGrid) {
   membersGrid.querySelectorAll('article').forEach((card) => {
     const name = card.querySelector('h3').textContent
+    const role = card.querySelector('.member-role').textContent
+    const countries = ['Polonia', 'Venezuela', 'España', 'Venezuela']
+    const country = countries[[...card.parentElement.children].indexOf(card)]
     const rotor = document.createElement('div')
     rotor.className = 'member-rotor'
     const front = document.createElement('div')
@@ -236,9 +239,18 @@ if (membersGrid) {
     back.className = 'member-back'
     const title = document.createElement('h3')
     title.textContent = name
+    const backRole = document.createElement('p')
+    backRole.className = 'member-back-role'
+    backRole.textContent = role
+    const backCountry = document.createElement('p')
+    backCountry.className = 'member-country'
+    backCountry.textContent = country
     const copy = document.createElement('p')
     copy.textContent = 'Texto de prueba. Aquí podrás conocer más sobre este artista y su historia con Blissline.'
-    back.append(title, copy)
+    const secondCopy = document.createElement('p')
+    secondCopy.className = 'member-back-copy-second'
+    secondCopy.textContent = 'Otro bloque de texto de prueba para ampliar la historia del artista y su conexión con el groove.'
+    back.append(title, backRole, backCountry, copy, secondCopy)
     back.setAttribute('aria-hidden', 'true')
     rotor.append(front, back)
     card.append(rotor)
