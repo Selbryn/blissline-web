@@ -1,4 +1,5 @@
 import './style.css'
+import { translations } from './translations.js'
 
 const assetBase = import.meta.env.BASE_URL
 
@@ -15,7 +16,7 @@ document.querySelector('#app').innerHTML = `
     </a>
     <nav aria-label="Navegación principal">
       <a href="#show" data-i18n="nav.show">El show</a>
-      <a href="#banda" data-i18n="nav.band">La banda</a>
+      <a href="#banda-cards" data-i18n="nav.band">La banda</a>
       <a href="#repertorio" data-i18n="nav.repertoire">Repertorio</a>
       <a href="#eventos" data-i18n="nav.events">Eventos</a>
       <a href="#contacto" data-i18n="nav.contact">Contacto</a>
@@ -65,7 +66,7 @@ document.querySelector('#app').innerHTML = `
     <section class="content-section" id="banda">
       <p class="eyebrow" data-i18n="band.eyebrow">El grupo</p>
       <h2 data-i18n="band.title">Cuatro músicos, un mismo groove</h2>
-      <div class="members">
+      <div class="members" id="banda-cards">
         <article>
           <div class="member-heading"><h3>Ada Nasiadka</h3><p class="member-role">Voz</p></div>
           <div class="member-photo"><img src="${assetBase}images/ada.png" alt="Ada Nasiadka cantando"></div>
@@ -160,48 +161,66 @@ document.querySelector('#app').innerHTML = `
   <footer class="site-footer">© ${new Date().getFullYear()} Blissline</footer>
 `
 
-const translations = {
-  es: { language: 'Idioma', nav: ['El show', 'Repertorio', 'Eventos', 'Contacto'], hero: ['Música en directo', 'BLISSLINE.<br>Música atemporal.', 'Funk, disco y house para bodas, eventos privados y festivales.', 'Contactar con Blissline'], show: ['Más que música en vivo', 'Un sonido que todos conocen', 'Canciones icónicas, músicos en vivo y un groove irresistible: una experiencia para conectar generaciones, culturas y nacionalidades.'], band: ['El grupo', 'Cuatro músicos, un mismo groove'], repertoire: ['El sonido', 'Ya conoces las canciones. Ahora vívelas en directo.', '', 'Escucha el repertorio', 'Nuestro directo'], events: ['Para cada celebración', 'Los grandes momentos se recuerdan por cómo suenan.'], contact: ['Contacto', 'Hablemos de tu evento', 'Cuéntanos qué tienes en mente y crearemos el sonido de la noche.'], features: [['Atemporal', 'Canciones que nunca se olvidan.'], ['Internacional', 'Música que cruza idiomas y culturas.'], ['En vivo', 'Músicos reales, interacción real, energía real.'], ['Versátil', 'Del cóctel elegante a una pista de baile llena.']], eventItems: ['Bodas', 'Eventos privados y corporativos', 'Festivales'], roles: ['Voz', 'Bajo', 'Saxofón', 'Percusión'] },
-  en: { language: 'Language', nav: ['The show', 'Repertoire', 'Events', 'Contact'], hero: ['Live music', 'Timeless music.<br>Live energy.', 'Funk, disco and house for weddings, private events and festivals.', 'Contact Blissline'], show: ['More than live music', 'A sound everyone knows', 'Iconic songs, live musicians and an irresistible groove: an experience that connects generations, cultures and nationalities.'], band: ['The band', 'Four musicians, one groove'], repertoire: ['The sound', 'You know the songs. Now experience them live.', 'From timeless disco and funk classics to the energy of contemporary house.', 'Listen to the repertoire', 'Our live show'], events: ['For every celebration', 'Great moments are remembered by how they sound.'], contact: ['Contact', 'Let’s talk about your event', 'Tell us what you have in mind and we’ll create the sound of the night.'], features: [['Timeless', 'Songs you never forget.'], ['International', 'Music that crosses languages and cultures.'], ['Live', 'Real musicians, real interaction, real energy.'], ['Versatile', 'From an elegant cocktail to a packed dance floor.']], eventItems: ['Weddings', 'Private and corporate events', 'Festivals'], roles: ['Vocals', 'Bass', 'Saxophone', 'Percussion'] },
-  pl: { language: 'Język', nav: ['Show', 'Repertuar', 'Wydarzenia', 'Kontakt'], hero: ['Muzyka na żywo', 'Ponadczasowa muzyka.<br>Energia na żywo.', 'Funk, disco i house na wesela, prywatne wydarzenia i festiwale.', 'Skontaktuj się z Blissline'], show: ['Więcej niż muzyka na żywo', 'Brzmienie, które zna każdy', 'Ikoniczne utwory, muzycy na żywo i nieodparty groove: doświadczenie łączące pokolenia, kultury i narodowości.'], band: ['Zespół', 'Czterech muzyków, jeden groove'], repertoire: ['Brzmienie', 'Znasz te utwory. Teraz przeżyj je na żywo.', 'Od ponadczasowych klasyków disco i funku po energię współczesnego house’u.', 'Posłuchaj repertuaru', 'Nasz koncert na żywo'], events: ['Na każdą uroczystość', 'Wielkie chwile pamięta się po tym, jak brzmią.'], contact: ['Kontakt', 'Porozmawiajmy o Twoim wydarzeniu', 'Opowiedz nam o swoich planach, a stworzymy brzmienie tego wieczoru.'], features: [['Ponadczasowe', 'Piosenki, których się nie zapomina.'], ['Międzynarodowe', 'Muzyka przekraczająca języki i kultury.'], ['Na żywo', 'Prawdziwi muzycy, prawdziwa energia.'], ['Wszechstronne', 'Od eleganckiego koktajlu po pełny parkiet.']], eventItems: ['Wesela', 'Wydarzenia prywatne i firmowe', 'Festiwale'], roles: ['Wokal', 'Bas', 'Saksofon', 'Perkusja'] }
-}
-
-const navLabels = {
-  es: ['El show', 'La banda', 'Repertorio', 'Eventos', 'Contacto'],
-  en: ['The show', 'The band', 'Repertoire', 'Events', 'Contact'],
-  pl: ['Show', 'Zespół', 'Repertuar', 'Wydarzenia', 'Kontakt']
-}
-
-const applyLanguage = (language) => {
-  const t = translations[language] || translations.es
+const applyLanguage = (requestedLanguage) => {
+  const language = Object.hasOwn(translations, requestedLanguage) ? requestedLanguage : 'es'
+  const t = translations[language]
   document.documentElement.lang = language
+  document.title = t.pageTitle
+  document.querySelector('meta[name="description"]').content = t.pageDescription
   const toggleFlag = document.querySelector('.language-toggle .flag')
-  if (toggleFlag) {
-    toggleFlag.className = `flag flag-${language}`
-    toggleFlag.src = `${assetBase}images/flags/${language}.svg`
-  }
-  document.querySelector('nav').setAttribute('aria-label', t.language)
-  document.querySelectorAll('nav > a').forEach((el, i) => { el.textContent = navLabels[language][i] })
+  toggleFlag.className = `flag flag-${language}`
+  toggleFlag.src = `${assetBase}images/flags/${language}.svg`
+  document.querySelector('nav').setAttribute('aria-label', t.navigation)
+  document.querySelector('.brand').setAttribute('aria-label', t.home)
+  document.querySelector('.skip-link').textContent = t.skip
+  document.querySelectorAll('nav > a').forEach((el, i) => { el.textContent = t.nav[i] })
   const groups = [
     [['.hero-section .eyebrow', '.hero-section h1', '.hero-section .intro'], t.hero],
-    [['#show .eyebrow', '#show h2', '#show > p'], t.show],
+    [['#show .eyebrow', '#show h2', '[data-i18n="show.description"]'], t.show],
     [['#banda .eyebrow', '#banda h2'], t.band],
-    [['#repertorio .eyebrow', '#repertorio h2', '#repertorio > p'], t.repertoire],
+    [['#repertorio .eyebrow', '#repertorio h2'], t.repertoire],
     [['#eventos .eyebrow', '#eventos h2'], t.events],
-    [['#contacto .eyebrow', '#contacto h2', '#contacto > p'], t.contact]
+    [['#contacto .eyebrow', '#contacto h2', '[data-i18n="contact.description"]'], t.contact],
   ]
-  groups.forEach(([selectors, values]) => selectors.forEach((selector, i) => { const el = document.querySelector(selector); if (el) el.innerHTML = values[i] }))
-  const floatingContact = document.querySelector('.floating-contact span')
-  if (floatingContact) floatingContact.textContent = t.hero[3]
-  document.querySelectorAll('.feature-list li').forEach((el, i) => { el.querySelector('strong').textContent = t.features[i][0]; el.querySelector('span').textContent = t.features[i][1] })
+  groups.forEach(([selectors, values]) => selectors.forEach((selector, i) => {
+    const el = document.querySelector(selector)
+    if (selector === '.hero-section h1') el.innerHTML = values[i]
+    else el.textContent = values[i]
+  }))
+  document.querySelector('.floating-contact span').textContent = t.hero[3]
+  document.querySelector('.floating-contact').setAttribute('aria-label', t.hero[3])
+  document.querySelectorAll('.feature-list li').forEach((el, i) => {
+    el.querySelector('strong').textContent = t.features[i][0]
+    el.querySelector('span').textContent = t.features[i][1]
+  })
   document.querySelectorAll('.event-list li').forEach((el, i) => { el.textContent = t.eventItems[i] })
-  document.querySelectorAll('.member-role').forEach((el, i) => { el.textContent = t.roles[i] })
-  document.querySelectorAll('#repertorio .button span[data-i18n]').forEach((el, i) => { el.textContent = t.repertoire[i + 3] })
+  document.querySelectorAll('.members article').forEach((card, i) => {
+    card.querySelector('.member-role').textContent = t.roles[i]
+    card.querySelector('.member-description').textContent = t.members[i]
+    card.querySelector('.member-photo img').alt = t.memberAlts[i]
+    card.querySelector('.member-back-role').textContent = t.roles[i]
+    card.querySelector('.member-country').textContent = t.countries[i]
+    card.querySelector('.member-back-copy').textContent = t.memberBack[0]
+    card.querySelector('.member-back-copy-second').textContent = t.memberBack[1]
+  })
+  document.querySelectorAll('#repertorio .button span[data-i18n]').forEach((el, i) => { el.textContent = t.repertoire[i + 2] })
+  document.querySelector('[data-i18n="repertoire.spotify"]').closest('a').setAttribute('aria-label', t.spotify)
+  document.querySelector('[data-i18n="repertoire.youtube"]').closest('a').setAttribute('aria-label', t.youtube)
+  document.querySelector('.repertoire-highlights__label').textContent = t.repertoireLabel
+  document.querySelectorAll('.song-list li').forEach((el) => {
+    el.querySelector('a').setAttribute('aria-label', t.listenSong.replace('{song}', el.querySelector('span').textContent))
+  })
+  document.querySelectorAll('.contact-detail-label').forEach((el, i) => { el.textContent = t.contactLabels[i] })
+  document.querySelector('.contact-links').setAttribute('aria-label', t.social)
+  document.querySelector('a[href="https://wa.me/34611619440"]').setAttribute('aria-label', t.whatsapp)
   document.querySelector('.language-picker span.visually-hidden').textContent = t.language
-  document.querySelector('.language-toggle').setAttribute('aria-label', `${t.language}: ${language}`)
+  document.querySelector('.language-toggle').setAttribute('aria-label', `${t.language}: ${t.languageName}`)
+  document.querySelector('.language-menu').setAttribute('aria-label', t.selectLanguage)
+  document.querySelectorAll('[data-language]').forEach((option) => {
+    option.setAttribute('aria-selected', String(option.dataset.language === language))
+  })
   localStorage.setItem('blissline-language', language)
 }
-
 const languageToggle = document.querySelector('.language-toggle')
 const languageMenu = document.querySelector('.language-menu')
 const setLanguageMenuState = (open) => {
@@ -209,7 +228,7 @@ const setLanguageMenuState = (open) => {
   languageToggle.setAttribute('aria-expanded', String(open))
 }
 const savedLanguage = localStorage.getItem('blissline-language') || 'es'
-applyLanguage(savedLanguage)
+
 document.querySelectorAll('[data-language]').forEach((option) => option.addEventListener('click', (event) => {
   event.preventDefault()
   event.stopPropagation()
@@ -246,6 +265,7 @@ if (membersGrid) {
     backCountry.className = 'member-country'
     backCountry.textContent = country
     const copy = document.createElement('p')
+    copy.className = 'member-back-copy'
     copy.textContent = 'Texto de prueba. Aquí podrás conocer más sobre este artista y su historia con Blissline.'
     const secondCopy = document.createElement('p')
     secondCopy.className = 'member-back-copy-second'
@@ -325,6 +345,9 @@ if (membersGrid) {
     })
   }
 }
+
+// Apply after both sides of the member cards exist, including on a saved-language reload.
+applyLanguage(savedLanguage)
 
 const canvas = document.querySelector('#disco-ball-canvas')
 const gl = canvas.getContext('webgl', { alpha: true, antialias: true })
