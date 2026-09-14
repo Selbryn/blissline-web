@@ -243,6 +243,8 @@ if (membersGrid) {
         card.style.setProperty('--card-rotate-y', '0deg')
         card.style.setProperty('--foil-x', '50%')
         card.style.setProperty('--foil-y', '50%')
+        card.style.setProperty('--parallax-x', '0px')
+        card.style.setProperty('--parallax-y', '0px')
       }
 
       card.addEventListener('pointermove', (event) => {
@@ -257,6 +259,8 @@ if (membersGrid) {
           card.style.setProperty('--card-rotate-y', `${(x - 0.5) * 7}deg`)
           card.style.setProperty('--foil-x', `${x * 100}%`)
           card.style.setProperty('--foil-y', `${y * 100}%`)
+          card.style.setProperty('--parallax-x', `${(x - 0.5) * 8}px`)
+          card.style.setProperty('--parallax-y', `${(y - 0.5) * 8}px`)
           pointerFrame = 0
         })
       }, { passive: true })

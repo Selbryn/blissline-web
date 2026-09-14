@@ -321,11 +321,13 @@ h3 { margin-bottom: .35rem; color: var(--orange); font-size: 2rem; line-height: 
   --card-rotate-y: 0deg;
   --foil-x: 50%;
   --foil-y: 50%;
+  --parallax-x: 0px;
+  --parallax-y: 0px;
   position: relative;
   isolation: isolate;
   display: flex;
   min-width: 0;
-  overflow: hidden;
+  overflow: visible;
   flex-direction: column;
   padding-bottom: 8rem;
   border: 2px solid rgba(243, 240, 233, .34);
@@ -358,7 +360,7 @@ h3 { margin-bottom: .35rem; color: var(--orange); font-size: 2rem; line-height: 
 .members article::after {
   position: absolute;
   z-index: 2;
-  inset: -35%;
+  inset: 0;
   background: radial-gradient(circle at var(--foil-x) var(--foil-y), rgba(255, 242, 205, .33), rgba(159, 194, 255, .12) 14%, transparent 36%);
   content: '';
   mix-blend-mode: screen;
@@ -370,17 +372,17 @@ h3 { margin-bottom: .35rem; color: var(--orange); font-size: 2rem; line-height: 
 .members.is-visible article::before { animation-play-state: running; }
 .members.is-visible article:hover::before, .members.is-visible article:focus-within::before { animation-duration: 2.8s; }
 .members article:hover::after, .members article:focus-within::after { opacity: .9; }
-.member-heading { position: absolute; z-index: 4; top: 0; right: 0; left: 0; padding: 1.5rem; text-shadow: 0 .15rem .7rem rgba(6, 8, 35, .75); }
+.member-heading { position: absolute; z-index: 6; top: 0; right: 0; left: 0; padding: 1.5rem; text-shadow: 0 .15rem .7rem rgba(6, 8, 35, .75); transform: translate3d(var(--parallax-x), var(--parallax-y), 3.5rem); transition: transform .18s ease-out; }
 .member-heading h3 { margin: 0; font-family: 'Bebas Neue', Impact, sans-serif; font-size: 1.8rem; font-weight: 400; letter-spacing: .04em; line-height: .95; text-transform: uppercase; }
 .member-heading .member-role { margin: .35rem 0 0; color: var(--orange); font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-.member-photo { position: relative; z-index: 1; flex: 0 0 24rem; width: 100%; height: 24rem; overflow: visible; }
+.member-photo { position: relative; z-index: 5; flex: 0 0 24rem; width: 100%; height: 24rem; overflow: visible; transform: translate3d(var(--parallax-x), var(--parallax-y), 1.75rem); transition: transform .2s ease-out; }
 .member-photo img { position: relative; z-index: 1; display: block; width: 100%; height: 100%; object-fit: contain; object-position: center bottom; opacity: 1; transform: scale(1.1); transform-origin: center bottom; -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 77%, transparent 100%); mask-image: linear-gradient(to bottom, #000 0%, #000 77%, transparent 100%); }
 .members article:nth-child(1) .member-photo img { transform: translateY(50px) scale(1.1) scaleX(-1); -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 95%, transparent 100%); mask-image: linear-gradient(to bottom, #000 0%, #000 95%, transparent 100%); }
 .members article:nth-child(2) .member-photo img { transform: translateY(18%) scale(1.1); }
 .members article:nth-child(3) .member-photo img { transform: translateY(12%) scale(1.1); }
 .members article:nth-child(4) .member-photo img { transform: translateY(10%) scale(1.1); }
 .member-photo { margin-bottom: 0; }
-.member-description { display: -webkit-box; position: absolute; z-index: 4; right: 0; bottom: -1rem; left: 0; height: calc(4.5em + 3rem); margin: 0; overflow: hidden; padding: 1.5rem; color: rgba(243, 240, 233, .82); font-size: .88rem; line-height: 1.5; text-shadow: 0 .1rem .45rem rgba(6, 8, 35, .75); -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+.member-description { display: -webkit-box; position: absolute; z-index: 6; right: 0; bottom: -1rem; left: 0; height: calc(4.5em + 3rem); margin: 0; overflow: hidden; padding: 1.5rem; color: rgba(243, 240, 233, .82); font-size: .88rem; line-height: 1.5; text-shadow: 0 .1rem .45rem rgba(6, 8, 35, .75); transform: translate3d(var(--parallax-x), var(--parallax-y), 2.5rem); transition: transform .19s ease-out; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
 
 @keyframes member-foil-flow {
   0% { background-position: 0 0, 0% 35%; }
@@ -413,11 +415,13 @@ h3 { margin-bottom: .35rem; color: var(--orange); font-size: 2rem; line-height: 
   .members article { transition: none; transform: none; }
   .members article::before { animation: none; }
   .members article:hover, .members article:focus-within { transform: none; }
+  .member-heading, .member-photo, .member-description { transform: none; transition: none; }
 }
 
 @media (hover: none), (pointer: coarse) {
   .members article, .members article:hover, .members article:focus-within { transform: none; }
   .members article::before { animation: none; }
+  .member-heading, .member-photo, .member-description { transform: none; }
 }
 
 @media (max-width: 42rem) {
