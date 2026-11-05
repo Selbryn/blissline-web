@@ -5,40 +5,45 @@ const assetBase = import.meta.env.BASE_URL
 
 document.querySelector('#app').innerHTML = `
   <a class="skip-link" href="#contenido">Saltar al contenido</a>
-  <div class="disco-ball" aria-hidden="true">
-    <canvas id="disco-ball-canvas"></canvas>
-    <span class="disco-ball__chain"></span>
-  </div>
   <header class="site-header">
     <canvas class="header-reflections" aria-hidden="true"></canvas>
+    <div class="disco-ball" aria-hidden="true">
+      <canvas id="disco-ball-canvas"></canvas>
+      <span class="disco-ball__chain"></span>
+    </div>
     <a class="brand" href="#inicio" aria-label="Blissline, inicio">
       <img src="${assetBase}images/blissline-logo.png" alt="Blissline">
     </a>
-    <nav aria-label="Navegación principal">
+    <nav class="site-nav" id="site-navigation" aria-label="Navegación principal">
       <a href="#show" data-i18n="nav.show">El show</a>
-      <a href="#banda-cards" data-i18n="nav.band">La banda</a>
+      <a href="#banda" data-i18n="nav.band">La banda</a>
       <a href="#repertorio" data-i18n="nav.repertoire">Repertorio</a>
       <a href="#eventos" data-i18n="nav.events">Eventos</a>
       <a href="#contacto" data-i18n="nav.contact">Contacto</a>
+    </nav>
+    <div class="header-actions">
       <div class="language-picker">
         <span class="visually-hidden" data-i18n="language.label">Idioma</span>
-        <button class="language-toggle" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Idioma seleccionado">
+        <button class="language-toggle" type="button" aria-haspopup="listbox" aria-controls="language-menu" aria-expanded="false" aria-label="Idioma seleccionado">
           <img class="flag flag-es" src="${assetBase}images/flags/es.svg" alt="">
         </button>
-        <div class="language-menu" role="listbox" aria-label="Seleccionar idioma">
+        <div class="language-menu" id="language-menu" role="listbox" aria-label="Seleccionar idioma">
           <button type="button" role="option" data-language="es" aria-label="Español"><img class="flag flag-es" src="${assetBase}images/flags/es.svg" alt=""></button>
           <button type="button" role="option" data-language="en" aria-label="English"><img class="flag flag-en" src="${assetBase}images/flags/en.svg" alt=""></button>
           <button type="button" role="option" data-language="pl" aria-label="Polski"><img class="flag flag-pl" src="${assetBase}images/flags/pl.svg" alt=""></button>
         </div>
       </div>
-    </nav>
+      <button class="nav-toggle" type="button" aria-controls="site-navigation" aria-expanded="false" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </header>
 
   <a class="button floating-contact" href="#contacto" aria-label="Contactar con Blissline">
     <span data-i18n="floating.cta">Contactar con Blissline</span>
   </a>
 
-  <main id="contenido">
+  <main id="contenido" tabindex="-1">
     <section class="hero-section" id="inicio">
       <video class="hero-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
         <source src="${assetBase}videos/blisslineMainVideo.mp4" type="video/mp4">
@@ -130,7 +135,7 @@ document.querySelector('#app').innerHTML = `
       </ul>
     </section>
 
-    <section class="contact-section" id="contacto">
+    <section class="contact-section" id="contacto" tabindex="-1">
       <p class="eyebrow" data-i18n="contact.eyebrow">Contacto</p>
       <h2 data-i18n="contact.title">Hablemos de tu evento</h2>
       <p data-i18n="contact.description">Cuéntanos qué tienes en mente y crearemos el sonido de la noche.</p>
@@ -171,6 +176,7 @@ const applyLanguage = (requestedLanguage) => {
   toggleFlag.className = `flag flag-${language}`
   toggleFlag.src = `${assetBase}images/flags/${language}.svg`
   document.querySelector('nav').setAttribute('aria-label', t.navigation)
+  document.querySelector('.nav-toggle').setAttribute('aria-label', t[document.querySelector('.nav-toggle').getAttribute('aria-expanded') === 'true' ? 'closeMenu' : 'openMenu'])
   document.querySelector('.brand').setAttribute('aria-label', t.home)
   document.querySelector('.skip-link').textContent = t.skip
   document.querySelectorAll('nav > a').forEach((el, i) => { el.textContent = t.nav[i] })
@@ -219,28 +225,170 @@ const applyLanguage = (requestedLanguage) => {
   document.querySelectorAll('[data-language]').forEach((option) => {
     option.setAttribute('aria-selected', String(option.dataset.language === language))
   })
-  localStorage.setItem('blissline-language', language)
+  try { localStorage.setItem('blissline-language', language) } catch { /* Storage may be disabled. */ }
 }
+const siteHeader = document.querySelector('.site-header')
+const siteNav = document.querySelector('.site-nav')
+const navToggle = document.querySelector('.nav-toggle')
+const compactNavigation = window.matchMedia('(max-width: 79.99rem)')
+const setNavigationState = (open, restoreFocus = false) => {
+  siteNav.classList.toggle('is-open', open)
+  navToggle.setAttribute('aria-expanded', String(open))
+  const t = translations[document.documentElement.lang] || translations.es
+  navToggle.setAttribute('aria-label', open ? t.closeMenu : t.openMenu)
+  if (restoreFocus) navToggle.focus()
+}
+navToggle.addEventListener('click', () => {
+  setLanguageMenuState(false)
+  setNavigationState(navToggle.getAttribute('aria-expanded') !== 'true')
+})
+navToggle.addEventListener('keydown', event => {
+  if (event.key === 'Tab' && !event.shiftKey && siteNav.classList.contains('is-open')) {
+    event.preventDefault()
+    siteNav.querySelector('a').focus()
+  }
+})
+siteNav.querySelector('a').addEventListener('keydown', event => {
+  if (event.key === 'Tab' && event.shiftKey && compactNavigation.matches) {
+    event.preventDefault()
+    navToggle.focus()
+  }
+})
+compactNavigation.addEventListener('change', () => {
+  const focusInNavigation = siteNav.contains(document.activeElement)
+  setNavigationState(false, compactNavigation.matches && focusInNavigation)
+})
+new ResizeObserver(() => {
+  document.documentElement.style.setProperty('--header-height', `${siteHeader.getBoundingClientRect().height}px`)
+}).observe(siteHeader)
+
 const languageToggle = document.querySelector('.language-toggle')
 const languageMenu = document.querySelector('.language-menu')
-const setLanguageMenuState = (open) => {
+const languageOptions = [...languageMenu.querySelectorAll('[data-language]')]
+const setLanguageMenuState = (open, restoreFocus = false) => {
   languageMenu.classList.toggle('is-open', open)
   languageToggle.setAttribute('aria-expanded', String(open))
+  if (open) {
+    setNavigationState(false)
+    languageMenu.querySelector('[aria-selected="true"]').focus()
+  } else if (restoreFocus) languageToggle.focus()
 }
-const savedLanguage = localStorage.getItem('blissline-language') || 'es'
+let savedLanguage = 'es'
+try { savedLanguage = localStorage.getItem('blissline-language') || 'es' } catch { /* Use the default language. */ }
 
 document.querySelectorAll('[data-language]').forEach((option) => option.addEventListener('click', (event) => {
   event.preventDefault()
   event.stopPropagation()
   applyLanguage(option.dataset.language)
-  setLanguageMenuState(false)
+  setLanguageMenuState(false, true)
 }))
 languageToggle.addEventListener('click', (event) => {
   event.preventDefault()
   event.stopPropagation()
   setLanguageMenuState(!languageMenu.classList.contains('is-open'))
 })
-document.addEventListener('click', (event) => { if (!event.target.closest('.language-picker')) setLanguageMenuState(false) })
+languageToggle.addEventListener('keydown', event => {
+  if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+    event.preventDefault()
+    setLanguageMenuState(true)
+  }
+})
+languageMenu.addEventListener('keydown', event => {
+  const index = languageOptions.indexOf(document.activeElement)
+  let next
+  if (event.key === 'ArrowDown') next = (index + 1) % languageOptions.length
+  if (event.key === 'ArrowUp') next = (index - 1 + languageOptions.length) % languageOptions.length
+  if (event.key === 'Home') next = 0
+  if (event.key === 'End') next = languageOptions.length - 1
+  if (next !== undefined) {
+    event.preventDefault()
+    languageOptions[next].focus()
+  }
+})
+document.addEventListener('keydown', event => {
+  if (event.key !== 'Escape') return
+  if (languageMenu.classList.contains('is-open')) setLanguageMenuState(false, true)
+  else if (siteNav.classList.contains('is-open')) setNavigationState(false, true)
+})
+document.addEventListener('click', event => {
+  if (!event.target.closest('.language-picker')) setLanguageMenuState(false)
+  if (!event.target.closest('.site-nav, .nav-toggle')) setNavigationState(false)
+})
+document.addEventListener('focusin', event => {
+  if (!event.target.closest('.language-picker')) setLanguageMenuState(false)
+  if (!event.target.closest('.site-nav, .nav-toggle')) setNavigationState(false)
+})
+
+const floatingContact = document.querySelector('.floating-contact')
+const contactSection = document.querySelector('#contacto')
+
+// Center the actual content, excluding large section paddings. Long sections
+// start at their heading; jumping into the middle would hide their introduction.
+const contentBounds = target => {
+  if (!target.matches('section')) return target.getBoundingClientRect()
+  const boxes = [...target.children].map(child => child.getBoundingClientRect())
+  const top = Math.min(...boxes.map(box => box.top))
+  const bottom = Math.max(...boxes.map(box => box.bottom))
+  return { top, bottom, height: bottom - top }
+}
+const scrollToDestination = (hash, { focus = false, behavior = 'instant' } = {}) => {
+  let target = document.getElementById(hash.slice(1))
+  if (!target) return
+  setNavigationState(false)
+  setLanguageMenuState(false)
+
+  let top = 0
+  if (target.id !== 'inicio' && target.id !== 'contenido') {
+    const gap = parseFloat(getComputedStyle(document.documentElement).fontSize)
+    const viewportTop = siteHeader.getBoundingClientRect().height + gap
+    // Measure even when the CTA is hidden at Contact, so navigating back up
+    // reserves the same space. Restore it before the next paint.
+    const wasHidden = floatingContact.hidden
+    floatingContact.hidden = false
+    const contactTop = floatingContact.getBoundingClientRect().top
+    floatingContact.hidden = wasHidden
+    const viewportBottom = target.closest('#contacto') ? window.innerHeight - gap : contactTop - gap
+    const availableHeight = Math.max(0, viewportBottom - viewportTop)
+    let bounds = contentBounds(target)
+    if (target.classList.contains('members') && bounds.height > availableHeight) {
+      target = target.closest('section')
+      bounds = contentBounds(target)
+    }
+    const offset = bounds.height <= availableHeight
+      ? viewportTop + (availableHeight - bounds.height) / 2
+      : viewportTop
+    top = window.scrollY + bounds.top - offset
+  }
+  if (focus) {
+    target.setAttribute('tabindex', '-1')
+    target.focus({ preventScroll: true })
+  }
+  window.scrollTo({ top: Math.max(0, top), behavior })
+}
+
+document.querySelectorAll('a[href^="#"]').forEach(link => link.addEventListener('click', event => {
+  if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return
+  if (!document.getElementById(link.hash.slice(1))) return
+  event.preventDefault()
+  if (location.hash !== link.hash) history.pushState(null, '', link.hash)
+  scrollToDestination(link.hash, {
+    focus: true,
+    behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'
+  })
+}))
+window.addEventListener('hashchange', () => {
+  scrollToDestination(location.hash || '#inicio')
+})
+window.addEventListener('load', () => {
+  document.fonts.ready.then(() => {
+    if (location.hash) scrollToDestination(location.hash)
+  })
+}, { once: true })
+
+new IntersectionObserver(([entry]) => {
+  if (entry.isIntersecting && document.activeElement === floatingContact) contactSection.focus({ preventScroll: true })
+  floatingContact.hidden = entry.isIntersecting
+}).observe(contactSection)
 
 const membersGrid = document.querySelector('.members')
 if (membersGrid) {
@@ -270,7 +418,7 @@ if (membersGrid) {
     const secondCopy = document.createElement('p')
     secondCopy.className = 'member-back-copy-second'
     secondCopy.textContent = 'Otro bloque de texto de prueba para ampliar la historia del artista y su conexión con el groove.'
-    back.append(title, backRole, backCountry, copy, secondCopy)
+    back.append(title, backRole, copy, secondCopy, backCountry)
     back.setAttribute('aria-hidden', 'true')
     rotor.append(front, back)
     card.append(rotor)
@@ -543,7 +691,7 @@ if (gl) {
         height = header.clientHeight
         geometryDirty = false
       }
-      if (pointerPosition) {
+      if (pointerPosition && bounds.width > 0 && bounds.height > 0) {
         const screenX = Math.max(0, Math.min(1, pointerPosition.x / window.innerWidth))
         const screenY = Math.max(0, Math.min(1, pointerPosition.y / window.innerHeight))
         headerPointerTarget.x = (pointerPosition.x / window.innerWidth) * 2 - 1
@@ -613,6 +761,7 @@ if (gl) {
     resizeObserver.observe(canvas)
     resizeObserver.observe(header)
     window.addEventListener('pointermove', (event) => {
+      if (event.pointerType === 'touch') return
       pointerPosition = { x: event.clientX, y: event.clientY }
       scheduleDraw()
     }, { passive: true })
