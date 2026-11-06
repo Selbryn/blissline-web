@@ -74,22 +74,22 @@ document.querySelector('#app').innerHTML = `
       <div class="members" id="banda-cards">
         <article>
           <div class="member-heading"><h3>Ada Nasiadka</h3><p class="member-role">Voz</p></div>
-          <div class="member-photo"><img src="${assetBase}images/ada.png" alt="Ada Nasiadka cantando"></div>
+          <div class="member-photo"><img loading="lazy" decoding="async" srcset="${assetBase}images/ada-mobile.webp 800w, ${assetBase}images/ada.png 4800w" sizes="(max-width: 767px) 90vw, 2400px" src="${assetBase}images/ada.png" alt="Ada Nasiadka cantando"></div>
           <p class="member-description">Ada pone voz y carácter a cada canción, conectando con el público desde la primera nota.</p>
         </article>
         <article>
           <div class="member-heading"><h3>Luis Albarrán</h3><p class="member-role">Bajo</p></div>
-          <div class="member-photo"><img src="${assetBase}images/luis.png" alt="Luis Albarrán tocando el bajo"></div>
+          <div class="member-photo"><img loading="lazy" decoding="async" srcset="${assetBase}images/luis-mobile.webp 800w, ${assetBase}images/luis.png 4800w" sizes="(max-width: 767px) 90vw, 2400px" src="${assetBase}images/luis.png" alt="Luis Albarrán tocando el bajo"></div>
           <p class="member-description">Luis sostiene el groove con precisión y carácter, dando fuerza y elegancia a cada canción.</p>
         </article>
         <article>
           <div class="member-heading"><h3>Tino Bonet</h3><p class="member-role">Saxofón</p></div>
-          <div class="member-photo"><img src="${assetBase}images/tino.png" alt="Tino Bonet tocando el saxofón"></div>
+          <div class="member-photo"><img loading="lazy" decoding="async" srcset="${assetBase}images/tino-mobile.webp 800w, ${assetBase}images/tino.png 4800w" sizes="(max-width: 767px) 90vw, 2400px" src="${assetBase}images/tino.png" alt="Tino Bonet tocando el saxofón"></div>
           <p class="member-description">Tino aporta melodías brillantes y ese toque de soul que convierte cada directo en algo especial.</p>
         </article>
         <article>
           <div class="member-heading"><h3>Mauro Magarelli</h3><p class="member-role">Percusión</p></div>
-          <div class="member-photo"><img src="${assetBase}images/mauro.png" alt="Mauro Magarelli tocando las congas"></div>
+          <div class="member-photo"><img loading="lazy" decoding="async" srcset="${assetBase}images/mauro-mobile.webp 800w, ${assetBase}images/mauro.png 4800w" sizes="(max-width: 767px) 90vw, 2400px" src="${assetBase}images/mauro.png" alt="Mauro Magarelli tocando las congas"></div>
           <p class="member-description">Mauro enciende el ritmo con sus manos y transforma cualquier espacio en una celebración.</p>
         </article>
       </div>
@@ -358,6 +358,10 @@ const scrollToDestination = (hash, { focus = false, behavior = 'instant' } = {})
       ? viewportTop + (availableHeight - bounds.height) / 2
       : viewportTop
     top = window.scrollY + bounds.top - offset
+  }
+  if (matchMedia("(max-width: 767px)").matches && target.id !== "inicio") {
+    const section = target.closest('section') || target
+    top = window.scrollY + section.getBoundingClientRect().top - siteHeader.getBoundingClientRect().height
   }
   if (focus) {
     target.setAttribute('tabindex', '-1')
@@ -662,7 +666,7 @@ if (gl) {
 
     // One render per display frame, and no animation work once the cursor settles.
     const scheduleDraw = () => {
-      if (!frame && !document.hidden) frame = requestAnimationFrame(draw)
+      if (!frame && !document.hidden && !matchMedia("(max-width: 767px)").matches) frame = requestAnimationFrame(draw)
     }
     const invalidateGeometry = () => {
       geometryDirty = true
@@ -774,3 +778,6 @@ if (gl) {
     scheduleDraw()
   }
 }
+
+import('./mobile.js')
+
